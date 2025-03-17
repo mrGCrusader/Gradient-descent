@@ -20,8 +20,8 @@ class gradient_descent:
         self.lrs = learning_rate_sceduling
 
     def make_min_value(self,
-                       begining_point: np.array[float],
-                       logging: bool) -> np.array[float]:
+                       begining_point: np.array = None,
+                       logging: bool = False) -> np.array:
         """
         search min value with gradient descent.
         beginning_point: the point from which the algorithm starts working
@@ -30,10 +30,11 @@ class gradient_descent:
         """
         if (begining_point is None):
             begining_point = np.random.random(self.dimension)
-        step_number: int = 0
+        step_number: int = 1
         curr_value: np.array[float] = begining_point.copy()
         
         while (self.test(step_number)):
+            print(curr_value)
             curr_value -= (lrs:=self.lrs(step_number)) * self.gradient(curr_value)
             step_number += 1
             if (logging):
