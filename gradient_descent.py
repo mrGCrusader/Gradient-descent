@@ -34,7 +34,6 @@ class gradient_descent:
         curr_value: np.array[float] = begining_point.copy()
         
         while (self.test(step_number)):
-            print(curr_value)
             curr_value -= (lrs:=self.lrs(step_number)) * self.gradient(curr_value)
             step_number += 1
             if (logging):
