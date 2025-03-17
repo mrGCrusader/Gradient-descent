@@ -23,7 +23,7 @@ class Constant(LRScheduler):
     just a constant learning rate
     """
 
-    def get_lr(self, iter_number: int = 0):
+    def get_lr(self, iter_number: int = 0) -> float:
         return self.initial_lr
 
 
@@ -37,7 +37,7 @@ class TimeBasedDecay(LRScheduler):
         self.last = initial_lr
         self.hyper_lambda = hyper_lambda
 
-    def get_lr(self, iter_number: int = 0):
+    def get_lr(self, iter_number: int = 0) -> float:
         self.last = self.last / (1 + self.hyper_lambda * iter_number)
         return self.last
 
@@ -52,7 +52,7 @@ class StepDecay(LRScheduler):
         self.hyper_base = hyper_base
         self.step_size = hyper_lambda
 
-    def get_lr(self, iter_number: int = 0):
+    def get_lr(self, iter_number: int = 0) -> float:
         return self.initial_lr * (self.hyper_base ** math.floor((1 + iter_number) // self.step_size))
 
 
@@ -65,7 +65,7 @@ class ExponentialDecay(LRScheduler):
         super().__init__(initial_lr)
         self.hyper_lambda = hyper_lambda
 
-    def get_lr(self, iter_number: int = 0):
+    def get_lr(self, iter_number: int = 0) -> float:
         return self.initial_lr * math.exp(-self.hyper_lambda * iter_number)
 
 
@@ -79,13 +79,16 @@ class PolynomialDecay(LRScheduler):
         self.hyper_alpha = hyper_alpha
         self.hyper_beta = hyper_beta
 
-    def get_lr(self, iter_number: int = 0):
+    def get_lr(self, iter_number: int = 0) -> float:
         return self.initial_lr * (self.hyper_beta * iter_number + 1) ** (-self.hyper_alpha)
 
-# class CosineAnnealingLR:
-#     def __init__(self, initial_lr, T_max):
-#         self.initial_lr = initial_lr
-#         self.T_max = T_max
-#
-#     def get_lr(self, iter_num):
-#         return self.initial_lr * (1 + math.cos(math.pi * iter_num / self.T_max)) / 2
+class CosineAnnealingLR(LRScheduler):
+    """
+    h(k) = h_0 * (1 + cos(k * pi)) / 2
+    """
+    def __init__(self, initial_lr, hyper_lambda: float = 1):
+        super().__init__(initial_lr)
+        self.hyper_lambda = hyper_lambda
+
+    def get_lr(self, iter_number: int = 0) -> float:
+        return self.initial_lr * (1 + math.cos(math.pi * iter_number / self.hyper_lambda)) / 2

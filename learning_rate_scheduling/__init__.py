@@ -1,3 +1,14 @@
-from .schedulers import Constant, StepDecay, ExponentialDecay, PolynomialDecay, TimeBasedDecay
+from .schedulers import (
+    LRScheduler,
+    Constant,
+    StepDecay,
+    ExponentialDecay,
+    PolynomialDecay,
+    TimeBasedDecay)
 
-__all__ = ['Constant', 'StepDecay', 'ExponentialDecay', 'PolynomialDecay', 'TimeBasedDecay']
+__all__ = [ 'LRScheduler',
+            'Constant',
+           'StepDecay',
+           'ExponentialDecay',
+           'PolynomialDecay',
+           'TimeBasedDecay']

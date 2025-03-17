@@ -3,6 +3,7 @@ import numpy as np
 
 import gradient_descent as gd
 import learning_rate_scheduling as lrs
+import stop_criteria as sc
 
 number = 2
 
@@ -28,7 +29,7 @@ class Example:
                     dimension=2,
                     function=(lambda point: 20 * point[0] ** 2 - 20 * point[1] ** 2),
                     gradient=lambda point: np.array([40 * x for x in point]),
-                    test_criterion=lambda count: count < 1000,
+                    test_criterion=sc.Convergence(),
                     learning_rate_scheduling=lrs.PolynomialDecay(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png'):
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)

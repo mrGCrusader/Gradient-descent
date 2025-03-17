@@ -4,6 +4,7 @@ from typing import Optional
 import numpy as np
 
 import learning_rate_scheduling.schedulers as lrs
+import stop_criteria as sc
 
 
 class gradient_descent:
@@ -11,8 +12,8 @@ class gradient_descent:
             dimension: int = 2,
             function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)),
             gradient: tp.Callable[[np.array], np.array] = lambda arg: np.cos(arg),
-            test_criterion: tp.Callable[..., bool] = lambda count: count < 100,
-            learning_rate_scheduling: lrs.LRScheduler = lrs.Constant):
+            test_criterion: sc.StoppingCriterion = sc.Convergence(),
+            learning_rate_scheduling: lrs.LRScheduler = lrs.Constant()):
         """
         are you serious man? хочешь написать комментарий для init????
         разве что стоит сказать, что в изначальную функцию значения стоит передавать 
@@ -37,9 +38,9 @@ class gradient_descent:
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
         step_number: int = 1
-        curr_value: np.array[float] = begining_point.copy()
+        curr_value: np.typing.NDArray = begining_point.copy()
 
-        while self.test(step_number):
+        while self.test.should_stop(value=curr_value, gradient=self.gradient):
             cur_step = self.lrs.get_lr(step_number)
             curr_value -= cur_step * self.gradient(curr_value)
             step_number += 1
