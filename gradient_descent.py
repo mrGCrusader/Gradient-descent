@@ -18,16 +18,17 @@ class gradient_descent:
         self.gradient = gradient
         self.test = test_criterion
         self.lrs = learning_rate_sceduling
+        self.logs: list = None
 
     def make_min_value(self,
-                       begining_point: np.array = None,
-                       logging: bool = False) -> np.array:
+                       begining_point: np.array = None) -> np.array:
         """
         search min value with gradient descent.
         beginning_point: the point from which the algorithm starts working
         loging: print history in stdoutput
         return: returns the point obtained as a result of the algorithm
         """
+        self.logs = None
         if (begining_point is None):
             begining_point = np.random.random(self.dimension)
         step_number: int = 1
@@ -36,10 +37,16 @@ class gradient_descent:
         while (self.test(step_number)):
             curr_value -= (lrs:=self.lrs(step_number)) * self.gradient(curr_value)
             step_number += 1
-            if (logging):
-                print(f'{step_number} Value now: {curr_value} lrs now: {lrs}')
-        
+                # print(f'{step_number} Value now: {curr_value} lrs now: {lrs}')
+            self.logs.append((step_number, curr_value))
         return curr_value
+    
+
+    def get_log(self) -> list:
+        if self.logs is None:
+            print("No logs yet")
+            return
+        return self.logs
     
 
         
