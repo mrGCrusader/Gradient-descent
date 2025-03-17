@@ -40,8 +40,9 @@ class Example:
         z = [function(point) for point in lst]
         self.__painting_3d(x, y, z, file_name)
 
+YOUR_FILE_NAME = '/home/crusader/ml_yandex/Gradient-descent/graphics/second_ex.png'
 
 if __name__ == "__main__":
     ex = Example()
-    ex.run_example(file_name=f'C:/Users/ayazm/PycharmProjects/Gradient-descent/graphics/{number}_ex.png')
+    ex.run_example(file_name=YOUR_FILE_NAME)
     number += 1
