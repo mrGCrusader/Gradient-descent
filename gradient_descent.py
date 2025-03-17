@@ -7,10 +7,12 @@ import learning_rate_scheduling.schedulers as lrs
 
 
 class gradient_descent:
+    DELTA = 1e-6
+
     def __init__(self,
             dimension: int = 2,
             function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)),
-            gradient: tp.Callable[[np.array], np.array] = lambda arg: np.cos(arg),
+            gradient: tp.Callable[[np.array], np.array] | None = None,
             test_criterion: tp.Callable[..., bool] = lambda count: count < 100,
             learning_rate_scheduling: lrs.LRScheduler = lrs.Constant):
         """
@@ -24,7 +26,18 @@ class gradient_descent:
         self.test = test_criterion
         self.lrs = learning_rate_scheduling
         self.logs: list = []
-
+    
+    def __find_gradient(self, point: np.array) -> np.array:
+        default_value = self.function(point)
+        anw = np.zeros_like(point)
+        
+        for i in range(self.dimension):
+            point[i] += self.DELTA
+            anw[i] = self.function(point) - default_value
+            point[i] -= self.DELTA
+        
+        return anw / self.DELTA
+    
     def make_min_value(self,
                        begining_point: np.array = None) -> np.array:
         """
@@ -34,8 +47,12 @@ class gradient_descent:
         return: returns the point obtained as a result of the algorithm
         """
         self.logs = []
+
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
+        if self.gradient is None:
+            self.gradient = self.__find_gradient
+
         step_number: int = 1
         curr_value: np.array[float] = begining_point.copy()
 

@@ -26,8 +26,8 @@ class Example:
 
     def run_example(self,
                     dimension=2,
-                    function=(lambda point: 20 * point[0] ** 2 - 20 * point[1] ** 2),
-                    gradient=lambda point: np.array([40 * x for x in point]),
+                    function=(lambda point: 20 * point[0] ** 2 + 20 * point[1] ** 2),
+                    gradient=None,
                     test_criterion=lambda count: count < 1000,
                     learning_rate_scheduling=lrs.PolynomialDecay(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png'):
@@ -39,8 +39,9 @@ class Example:
         z = [function(point) for point in lst]
         self.__painting_3d(x, y, z, file_name)
 
+YOUR_FILE_NAME = '/home/crusader/ml_yandex/Gradient-descent/graphics/second_ex.png'
 
 if __name__ == "__main__":
     ex = Example()
-    ex.run_example(file_name=f'C:/Users/ayazm/PycharmProjects/Gradient-descent/graphics/{number}_ex.png')
+    ex.run_example(file_name=YOUR_FILE_NAME)
     number += 1
