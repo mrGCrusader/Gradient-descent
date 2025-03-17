@@ -46,7 +46,6 @@ class Convergence(StoppingCriterion):
         self.history.append(value)
         if len(self.history) < 2:
             return False
-        print(self.history)
         if abs(self.history[-1] - self.history[-2]) < value_to_compare:
             return True
         return False

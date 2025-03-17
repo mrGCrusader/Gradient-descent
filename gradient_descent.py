@@ -7,8 +7,24 @@ import learning_rate_scheduling.schedulers as lrs
 import stop_criteria as sc
 
 
-class gradient_descent:
+class Find_gradient:
     DELTA = 1e-6
+    
+    def __init__(self, function):
+        self.function = function
+    
+    def find_gradient(self, point: np.array) -> np.array:
+        default_value = self.function(point)
+        anw = np.zeros_like(point)
+        
+        for i in range(len(point)):
+            point[i] += self.DELTA
+            anw[i] = self.function(point) - default_value
+            point[i] -= self.DELTA
+        
+        return anw / self.DELTA
+    
+class gradient_descent:
 
     def __init__(self,
             dimension: int = 2,
@@ -29,16 +45,6 @@ class gradient_descent:
         self.lrs = learning_rate_scheduling
         self.logs: list = []
     
-    def __find_gradient(self, point: np.array) -> np.array:
-        default_value = self.function(point)
-        anw = np.zeros_like(point)
-        
-        for i in range(self.dimension):
-            point[i] += self.DELTA
-            anw[i] = self.function(point) - default_value
-            point[i] -= self.DELTA
-        
-        return anw / self.DELTA
     
     def make_min_value(self,
                        begining_point: np.array = None) -> np.array:
@@ -53,14 +59,14 @@ class gradient_descent:
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
         if self.gradient is None:
-            self.gradient = self.__find_gradient
+            find_grad = Find_gradient(self.function)
+            self.gradient = find_grad.find_gradient
 
         step_number: int = 1
         curr_value: np.typing.NDArray = begining_point.copy()
 
         while not self.test.should_stop(value=self.function(curr_value), gradient=self.gradient, iteration=step_number):
             cur_step = self.lrs.get_lr(step_number)
-            print(cur_step)
             curr_value -= cur_step * self.gradient(curr_value)
             step_number += 1
             self.logs.append((step_number, curr_value.copy()))
@@ -72,10 +78,3 @@ class gradient_descent:
             print("No logs yet")
             return
         return self.logs
-
-
-
-
-
-
-
