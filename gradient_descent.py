@@ -6,7 +6,7 @@ class gradient_descent:
             dimension: int = 2,
             function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)), \
             gradient: tp.Callable[[np.array], np.array] = lambda arg: np.cos(arg), \
-            test_criterion: tp.Callable[[int], bool] = lambda count: count < 100, \
+            test_criterion: tp.Callable[..., bool] = lambda count: count < 100, \
             learning_rate_sceduling: tp.Callable[[int], float] | float = 0.1):
         """
         are you serious man? хочешь написать комментарий для инита????
