@@ -21,7 +21,7 @@ class MaxIterations(StoppingCriterion):
     Stops after n iterations.
     """
 
-    def __init__(self, max_iter: int):
+    def __init__(self, max_iter: int = 100):
         super().__init__()
         self.max_iter = max_iter
 
@@ -42,10 +42,11 @@ class Convergence(StoppingCriterion):
     def should_stop(self, value: float, value_to_compare: float = None, **kwargs) -> bool:
         if value_to_compare is None:
             value_to_compare = self.eps
-        self.history.remove(self.history[0])
+        # self.history.remove(self.history[0])
         self.history.append(value)
         if len(self.history) < 2:
             return False
+        print(self.history)
         if abs(self.history[-1] - self.history[-2]) < value_to_compare:
             return True
         return False

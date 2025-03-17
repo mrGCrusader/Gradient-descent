@@ -80,7 +80,7 @@ class PolynomialDecay(LRScheduler):
         self.hyper_beta = hyper_beta
 
     def get_lr(self, iter_number: int = 0) -> float:
-        return self.initial_lr * (self.hyper_beta * iter_number + 1) ** (-self.hyper_alpha)
+        return self.initial_lr * ((self.hyper_beta * iter_number + 1) ** (-self.hyper_alpha))
 
 class CosineAnnealingLR(LRScheduler):
     """

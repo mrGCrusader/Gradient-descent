@@ -58,9 +58,10 @@ class gradient_descent:
         step_number: int = 1
         curr_value: np.typing.NDArray = begining_point.copy()
 
-        while self.test.should_stop(value=curr_value, gradient=self.gradient):
+        while not self.test.should_stop(value=self.function(curr_value), gradient=self.gradient, iteration=step_number):
             cur_step = self.lrs.get_lr(step_number)
-            curr_value -= cur_step * self.gradient()
+            print(cur_step)
+            curr_value -= cur_step * self.gradient(curr_value)
             step_number += 1
             self.logs.append((step_number, curr_value.copy()))
         return curr_value
