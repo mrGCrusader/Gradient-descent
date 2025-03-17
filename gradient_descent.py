@@ -9,9 +9,9 @@ class gradient_descent:
             test_criterion: tp.Callable[..., bool] = lambda count: count < 100, \
             learning_rate_sceduling: tp.Callable[[int], float] | float = 0.1):
         """
-        are you serious man? хочешь написать комментарий для инита????
+        are you serious man? хочешь написать комментарий для init????
         разве что стоит сказать, что в изначальную функцию значения стоит передавать 
-        ввиде np.array. Ну и learning_rate_sceduling это правило, по которому мы делаем следующий шаг
+        в виде np.array. Ну и learning_rate_scheduling это правило, по которому мы делаем следующий шаг
         """
         self.dimension = dimension
         self.function = function
@@ -24,7 +24,7 @@ class gradient_descent:
                        logging: bool) -> np.array[float]:
         """
         search min value with gradient descent.
-        begining_point: the point from which the algorithm starts working
+        beginning_point: the point from which the algorithm starts working
         loging: print history in stdoutput
         return: returns the point obtained as a result of the algorithm
         """
