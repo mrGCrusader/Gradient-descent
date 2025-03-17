@@ -16,10 +16,8 @@ class Example:
         ax.set_zlabel('Z')
         ax.set_title('Траектория градиентного спуска')
 
-        # Показать график
         plt.show()
 
-        # Сохранение графика в файл (с правильным расширением)
         plt.savefig(file_name)
 
 
