@@ -36,7 +36,6 @@ class gradient_descent:
         
         while (self.test(step_number)):
             curr_value -= (lrs:=self.lrs(step_number)) * self.gradient(curr_value)
-            print(curr_value)
             step_number += 1
             self.logs.append((step_number, curr_value.copy()))
         return curr_value
