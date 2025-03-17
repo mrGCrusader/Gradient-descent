@@ -42,7 +42,7 @@ class Convergence(StoppingCriterion):
     def should_stop(self, value: float, value_to_compare: float = None, **kwargs) -> bool:
         if value_to_compare is None:
             value_to_compare = self.eps
-        self.history.remove(0)
+        self.history.remove(self.history[0])
         self.history.append(value)
         if len(self.history) < 2:
             return False
