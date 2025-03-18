@@ -9,8 +9,8 @@ import stop_criteria as sc
 from scipy.optimize import root
 from gradient_descent import Find_gradient
 
-class Example:
 
+class Example:
     def __painting_3d(self, x, y, z, file_name):
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
@@ -26,12 +26,12 @@ class Example:
         plt.show()
 
         plt.savefig(file_name)
-    
+
     def __find_extremum(self, function, gradient):
-        initial_guess = [1.0, 1.0]
+        initial_guess = np.array([1.0, 1.0])
         result = root(gradient, initial_guess)
         return np.array(result)
-        
+
     def run_example(self,
                     dimension=2,
                     function=(lambda point: 20 * point[0] ** 2 + 20 * point[1] ** 2),
@@ -49,19 +49,20 @@ class Example:
 
 
 class Generate_test:
-    
+
     def __init__(self, count: int):
         self.count = count
         self.ex = Example()
-    
-    
+
     def generate(self):
         for num in range(self.count):
             [alpha, bravo, charlie] = np.random.randint(-10, 10, size=3)
             self.ex.run_example(dimension=2,
-                                function = (lambda point: alpha * point[0]**2 + bravo * point[1] ** 2 + charlie * point[1] * point[0]),
-                                gradient = None,
-                                file_name = f'/home/crusader/ml_yandex/Gradient-descent/graphics/{num}_ex.png')
+                                function=(
+                                    lambda point: alpha * point[0] ** 2 + bravo * point[1] ** 2 + charlie * point[1] *
+                                                  point[0]),
+                                gradient=None,
+                                file_name=f'/home/crusader/ml_yandex/Gradient-descent/graphics/{num}_ex.png')
 
 
 YOUR_FILE_NAME = os.path.dirname(os.path.abspath(__file__))
