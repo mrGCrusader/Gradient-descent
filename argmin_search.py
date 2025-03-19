@@ -7,7 +7,7 @@ class ArgminSearcher:
     def __init__(
         self,
         function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)),
-        frontier: tp.Tuple = (np.array(-10000., -10000), np.array(10000., 10000))):
+        frontier: tp.Tuple = (np.array([-10000., 10000.]), np.array([-10000., 10000.]))):
         self.function = function
         self.frontier = frontier
     
@@ -29,8 +29,6 @@ class ArgminSearcher:
                 xr = r - (r - l) / (self.phi + 1)
                 fr = self.function(xr)
         return (l + r) / 2    
-            
-    
     
     
     
