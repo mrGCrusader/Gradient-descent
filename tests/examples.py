@@ -10,9 +10,14 @@ from scipy.optimize import root
 from gradient_descent import Find_gradient
 import math
 
+YOUR_DIR_NAME = os.path.abspath('../ex_graphics/')
 
 class Example:
     def __painting_3d(self, x, y, z, file_name):
+        if not os.path.exists(file_name):
+            with open(file_name, "wb") as f:
+                pass
+
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
 
@@ -24,8 +29,8 @@ class Example:
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
         ax.set_title('Траектория градиентного спуска')
-        plt.show()
-        plt.show()
+        # plt.show()
+        # plt.show()
         plt.savefig(file_name)
 
     def run_example(self,
@@ -60,12 +65,13 @@ class Generate_test:
                                     lambda point: alpha * point[0] ** 2 + bravo * point[1] ** 2 + charlie * point[1] *
                                                   point[0]),
                                 gradient=None,
-                                file_name=f'/home/crusader/ml_yandex/Gradient-descent/graphics/{num}_ex.png')
+                                file_name=f'{YOUR_DIR_NAME}/{num}.png'
+                                )
 
 
-YOUR_FILE_NAME = os.path.dirname(os.path.abspath(__file__))
+
 
 if __name__ == "__main__":
     generator = Generate_test(10)
     generator.generate()
-
+    # print(YOUR_FILE_NAME)
