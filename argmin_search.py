@@ -16,9 +16,19 @@ class ArgminSearcher:
         l, r = self.frontier 
         xl, xr = l + (r - l) / (self.phi + 1), \
                 r - (r - l) / (self.phi + 1)
-        fl, fr = self.function(xl), self.function(xr) 
-        while (xr - xl > 1e-6):
-            pass
+        while (np.linalg.norm(xr - xl) > 1e-6):
+            fl, fr = self.function(xl), self.function(xr) 
+            if (fl < fr):
+                r = xr
+                xr, fr = xl, fl
+                xl = l + (r - l) / (self.phi + 1) 
+                fl = self.function(xl)
+            else:
+                l = xl
+                xl, fl = xr, fr
+                xr = r - (r - l) / (self.phi + 1)
+                fr = self.function(xr)
+        return (l + r) / 2    
             
     
     
