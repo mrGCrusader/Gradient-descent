@@ -68,8 +68,4 @@ YOUR_FILE_NAME = os.path.dirname(os.path.abspath(__file__))
 if __name__ == "__main__":
     generator = Generate_test(10)
     generator.generate()
-    # runner = Example()
-    # print(runner.run_example(function = lambda x: 
-    #     (x[0]**2) * math.cos(1 / x[0]) + (x[0]**2) * 2 + 
-    #     (x[1]**2) * math.cos(1 / x[1]) + (x[1]**2) * 2, beginning_point = np.array([0.0000001, 0.0000001]))
-    #     )
+
