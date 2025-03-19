@@ -32,6 +32,3 @@ class ArgminSearcher:
     
 first =  ArgminSearcher(function =lambda x: x**2, frontier=(-100., 100.))
 print(first.find_argmin())
-class ArgminSearcherScipy:
-    # Ayaz code here  
-    pass
