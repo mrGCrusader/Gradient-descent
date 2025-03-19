@@ -8,6 +8,7 @@ import learning_rate_scheduling as lrs
 import stop_criteria as sc
 from scipy.optimize import root
 from gradient_descent import Find_gradient
+import math
 
 
 class Example:
@@ -15,17 +16,19 @@ class Example:
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
 
+        anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
+        ax.scatter(anw[0], anw[1], anw[2], c= 'b', marker = 'o')
         ax.scatter(x, y, z, c='r', marker='o')
-        # ax.scatter(*extremum, c = 'b', marker = 'o')
-
+        
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
         ax.set_title('Траектория градиентного спуска')
 
         plt.show()
-
+        plt.show()
         plt.savefig(file_name)
+        
 
     def __find_extremum(self, function, gradient):
         initial_guess = np.array([1.0, 1.0])
@@ -38,15 +41,17 @@ class Example:
                     gradient=None,
                     test_criterion=sc.Convergence(),
                     learning_rate_scheduling=lrs.PolynomialDecay(),
-                    file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png'):
+                    file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
+                    beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
-        descent.make_min_value()
+        descent.make_min_value(beginning_point)
         lst = [point for (_, point) in descent.get_log()]
         x = [point[0] for point in lst]
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
+        anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
         self.__painting_3d(x, y, z, file_name)
-
+        return anw
 
 class Generate_test:
 
@@ -70,3 +75,8 @@ YOUR_FILE_NAME = os.path.dirname(os.path.abspath(__file__))
 if __name__ == "__main__":
     generator = Generate_test(10)
     generator.generate()
+    # runner = Example()
+    # print(runner.run_example(function = lambda x: 
+    #     (x[0]**2) * math.cos(1 / x[0]) + (x[0]**2) * 2 + 
+    #     (x[1]**2) * math.cos(1 / x[1]) + (x[1]**2) * 2, beginning_point = np.array([0.0000001, 0.0000001]))
+    #     )
