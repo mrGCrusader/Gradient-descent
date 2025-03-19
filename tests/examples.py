@@ -72,6 +72,7 @@ class Generate_test:
 
 
 if __name__ == "__main__":
+    os.makedirs(YOUR_DIR_NAME)
     generator = Generate_test(10)
     generator.generate()
     # print(YOUR_FILE_NAME)
