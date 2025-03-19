@@ -6,8 +6,8 @@ class ArgminSearcher:
     phi = (1 + math.sqrt(5)) / 2
     def __init__(
         self,
-        function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)),
-        frontier: tp.Tuple = (np.array([-10000., 10000.]), np.array([-10000., 10000.]))):
+        function: tp.Callable[[float], float] = lambda arg: np.sum(np.sin(arg)),
+        frontier: tp.Tuple = (-10000., 10000.)):
         self.function = function
         self.frontier = frontier
     
@@ -16,7 +16,7 @@ class ArgminSearcher:
         l, r = self.frontier 
         xl, xr = l + (r - l) / (self.phi + 1), \
                 r - (r - l) / (self.phi + 1)
-        while (np.linalg.norm(xr - xl) > 1e-6):
+        while (xr - xl > 1e-6):
             fl, fr = self.function(xl), self.function(xr) 
             if (fl < fr):
                 r = xr
@@ -30,8 +30,8 @@ class ArgminSearcher:
                 fr = self.function(xr)
         return (l + r) / 2    
     
-    
-    
+first =  ArgminSearcher(function =lambda x: x**2, frontier=(-100., 100.))
+print(first.find_argmin())
 class ArgminSearcherScipy:
     # Ayaz code here  
     pass
