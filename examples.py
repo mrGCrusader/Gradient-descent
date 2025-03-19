@@ -24,16 +24,9 @@ class Example:
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
         ax.set_title('Траектория градиентного спуска')
-
         plt.show()
         plt.show()
         plt.savefig(file_name)
-        
-
-    def __find_extremum(self, function, gradient):
-        initial_guess = np.array([1.0, 1.0])
-        result = root(gradient, initial_guess)
-        return np.array(result)
 
     def run_example(self,
                     dimension=2,
