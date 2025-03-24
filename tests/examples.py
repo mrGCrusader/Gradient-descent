@@ -12,7 +12,11 @@ import math
 
 YOUR_DIR_NAME = os.path.abspath('../ex_graphics/')
 
+
 class Example:
+    def __painting_contour_lines(self, x, y, z, file_name):
+        pass
+
     def __painting_3d(self, x, y, z, file_name):
         if not os.path.exists(file_name):
             with open(file_name, "wb") as f:
@@ -22,9 +26,9 @@ class Example:
         ax = fig.add_subplot(projection='3d')
 
         anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
-        ax.scatter(anw[0], anw[1], anw[2], c= 'b', marker = 'o')
+        ax.scatter(anw[0], anw[1], anw[2], c='b', marker='o')
         ax.scatter(x, y, z, c='r', marker='o')
-        
+
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
@@ -51,6 +55,7 @@ class Example:
         self.__painting_3d(x, y, z, file_name)
         return anw
 
+
 class Generate_test:
 
     def __init__(self, count: int):
@@ -67,8 +72,6 @@ class Generate_test:
                                 gradient=None,
                                 file_name=f'{YOUR_DIR_NAME}/{num}.png'
                                 )
-
-
 
 
 if __name__ == "__main__":
