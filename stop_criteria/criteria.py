@@ -57,7 +57,7 @@ class StepConvergence(Convergence):
     (the change in the value of the function or step norm is less than the threshold).
     """
 
-    def should_stop(self, step: np.typing.NDArray, **kwargs) -> bool:
+    def should_stop(self, step, **kwargs) -> bool:
         value = float(np.linalg.norm(step))
         return Convergence.should_stop(self, value, self.eps, **kwargs)
 
@@ -79,7 +79,7 @@ class StepComparativeConvergence(ComparativeConvergence):
     (the change in the value of the step norm is less than the eps * |value|).
     """
 
-    def should_stop(self, step: np.typing.NDArray, **kwargs) -> bool:
+    def should_stop(self, step, **kwargs) -> bool:
         value = float(np.linalg.norm(step))
         return ComparativeConvergence.should_stop(self, value, **kwargs)
 
@@ -93,7 +93,7 @@ class GradientNorm(StoppingCriterion):
         super().__init__()
         self.eps = eps
 
-    def should_stop(self, gradient: np.typing.NDArray, **kwargs) -> bool:
+    def should_stop(self, gradient, **kwargs) -> bool:
         gradient_norm = np.linalg.norm(gradient)
         return gradient_norm < self.eps
 
@@ -103,11 +103,11 @@ class GradientNormComparative(StoppingCriterion):
     Stops if gradient norm is less than the eps * |gradient(x_0)|.
     """
 
-    def __init__(self, eps: float = 1e-5, begin_gradient: np.typing.NDArray = 1):
+    def __init__(self, eps: float = 1e-5, begin_gradient = 1):
         super().__init__()
         self.eps = eps
         self.begin_gradient = begin_gradient
 
-    def should_stop(self, gradient: np.typing.NDArray, **kwargs) -> bool:
+    def should_stop(self, gradient, **kwargs) -> bool:
         gradient_norm = np.linalg.norm(gradient)
         return gradient_norm < self.eps * np.linalg.norm(self.begin_gradient)

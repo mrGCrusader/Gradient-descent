@@ -3,7 +3,12 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ..gradient_descent import gradient_descent 
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent))
+
+import gradient_descent as gd  # Теперь импорт работает
 import learning_rate_scheduling as lrs
 import stop_criteria as sc
 
@@ -42,7 +47,7 @@ class Example:
                     learning_rate_scheduling=lrs.Constant(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
                     beginning_point=None) -> list:
-        descent = gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
+        descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
         descent.make_min_value(beginning_point)
         lst = [point for (_, point) in descent.get_log()]
         x = [point[0] for point in lst]
@@ -70,10 +75,13 @@ class Generate_test:
                                 file_name=f'{YOUR_DIR_NAME}/{num}.png'
                                 )
 
+def create_dir():
+    if not os.path.isdir(YOUR_DIR_NAME):
+        if YOUR_DIR_NAME not in sys.path:
+            os.makedirs(YOUR_DIR_NAME)
 
 if __name__ == "__main__":
-    # if YOUR_DIR_NAME not in sys.path:
-    #     os.makedirs(YOUR_DIR_NAME)
+    create_dir()
     generator = Generate_test(10)
     generator.generate()
     # print(YOUR_FILE_NAME)
