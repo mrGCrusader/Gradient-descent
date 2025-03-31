@@ -6,9 +6,6 @@ import numpy as np
 import gradient_descent as gd
 import learning_rate_scheduling as lrs
 import stop_criteria as sc
-from scipy.optimize import root
-from gradient_descent import Find_gradient
-import math
 
 YOUR_DIR_NAME = os.path.abspath('../ex_graphics/')
 
@@ -42,7 +39,7 @@ class Example:
                     function=(lambda point: 20 * point[0] ** 2 + 20 * point[1] ** 2),
                     gradient=None,
                     test_criterion=sc.Convergence(),
-                    learning_rate_scheduling=lrs.PolynomialDecay(),
+                    learning_rate_scheduling=lrs.Constant(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
                     beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
@@ -75,7 +72,8 @@ class Generate_test:
 
 
 if __name__ == "__main__":
-    os.makedirs(YOUR_DIR_NAME)
+    # if YOUR_DIR_NAME not in sys.path:
+    #     os.makedirs(YOUR_DIR_NAME)
     generator = Generate_test(10)
     generator.generate()
     # print(YOUR_FILE_NAME)

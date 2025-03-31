@@ -5,25 +5,9 @@ import numpy as np
 
 import learning_rate_scheduling.schedulers as lrs
 import stop_criteria as sc
+from gradient import find_gradient
 
 
-class Find_gradient:
-    DELTA = 1e-6
-    
-    def __init__(self, function):
-        self.function = function
-    
-    def find_gradient(self, point: np.array) -> np.array:
-        default_value = self.function(point)
-        anw = np.zeros_like(point)
-        
-        for i in range(len(point)):
-            point[i] += self.DELTA
-            anw[i] = self.function(point) - default_value
-            point[i] -= self.DELTA
-        
-        return anw / self.DELTA
-    
 class gradient_descent:
 
     def __init__(self,
@@ -59,8 +43,8 @@ class gradient_descent:
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
         if self.gradient is None:
-            find_grad = Find_gradient(self.function)
-            self.gradient = find_grad.find_gradient
+            find_grad = find_gradient(self.function)
+            self.gradient = find_grad.get_value
 
         step_number: int = 1
         curr_value: np.typing.NDArray = begining_point.copy()

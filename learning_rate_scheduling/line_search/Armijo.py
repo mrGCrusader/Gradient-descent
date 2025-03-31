@@ -34,7 +34,7 @@ class ArmijoRule(LRScheduler):
         self.test = test_criterion
         self.alpha = alpha_0
 
-    def make_min_value(self,
+    def get_lr(self, iter_number: int = 1,
                        x: np.array = None,
                        p: np.array = None,
                        beta=0.5, c1=0.1):
@@ -70,7 +70,4 @@ class ArmijoRule(LRScheduler):
                 return alpha
             else:
                 alpha *= beta
-        self.alpha = alpha
-
-    def get_lr(self, iter_number: int = 0):
-        return self.alpha
+        return self.alpha * p
