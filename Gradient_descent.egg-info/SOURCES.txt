@@ -1,0 +1,14 @@
+README.md
+setup.py
+Gradient_descent.egg-info/PKG-INFO
+Gradient_descent.egg-info/SOURCES.txt
+Gradient_descent.egg-info/dependency_links.txt
+Gradient_descent.egg-info/top_level.txt
+learning_rate_scheduling/__init__.py
+learning_rate_scheduling/schedulers.py
+some_scipy/__init__.py
+some_scipy/argmin_search.py
+stop_criteria/__init__.py
+stop_criteria/criteria.py
+tests/__init__.py
+tests/examples.py

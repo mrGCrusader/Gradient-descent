@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-import gradient_descent as gd
+from ..gradient_descent import gradient_descent 
 import learning_rate_scheduling as lrs
 import stop_criteria as sc
 
@@ -42,7 +42,7 @@ class Example:
                     learning_rate_scheduling=lrs.Constant(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
                     beginning_point=None) -> list:
-        descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
+        descent = gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
         descent.make_min_value(beginning_point)
         lst = [point for (_, point) in descent.get_log()]
         x = [point[0] for point in lst]
