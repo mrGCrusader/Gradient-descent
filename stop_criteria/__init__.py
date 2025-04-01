@@ -7,6 +7,7 @@ from .criteria import (
     ComparativeConvergence,
     GradientNormComparative,
     GradientNorm,
+    Combine,
 )
 
 __all__ = [
@@ -17,5 +18,6 @@ __all__ = [
     'StepComparativeConvergence',
     'ComparativeConvergence',
     'GradientNormComparative',
-    'GradientNorm'
+    'GradientNorm',
+    'Combine'
 ]

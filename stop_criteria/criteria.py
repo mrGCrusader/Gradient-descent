@@ -35,7 +35,7 @@ class Convergence(StoppingCriterion):
     (the change in the value of the value is less than the threshold).
     """
 
-    def __init__(self, eps: float = 1e-5):
+    def __init__(self, eps: float = 1e-20):
         super().__init__()
         self.eps = eps
 
@@ -111,3 +111,19 @@ class GradientNormComparative(StoppingCriterion):
     def should_stop(self, gradient, **kwargs) -> bool:
         gradient_norm = np.linalg.norm(gradient)
         return gradient_norm < self.eps * np.linalg.norm(self.begin_gradient)
+
+class Combine(StoppingCriterion):
+    """
+    Combines different stopping criteria.
+    """
+
+    def __init__(self, eps: float = 1e-5, stop1 = MaxIterations(), stop2 = MaxIterations()):
+        super().__init__()
+        self.eps = eps
+        self.stop1 = stop1
+        self.stop2 = stop2
+
+
+    def should_stop(self, gradient: np.typing.NDArray, **kwargs) -> bool:
+        return (self.stop1.should_stop(**kwargs) or
+                self.stop2.should_stop(**kwargs))

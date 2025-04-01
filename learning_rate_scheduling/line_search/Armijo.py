@@ -11,7 +11,7 @@ class ArmijoRule(LRScheduler):
     def __init__(self, dimension: int = 2,
                  function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)),
                  gradient: tp.Callable[[np.array], np.array] = None,
-                 test_criterion: sc.StoppingCriterion = sc.Convergence(),
+                 test_criterion: sc.StoppingCriterion = sc.Combine(stop1=sc.MaxIterations(1000), stop2=sc.Convergence(10e-10)),
                  alpha_0: float = 1):
         """
         Armijo rule for choosing learning rate.
@@ -37,18 +37,20 @@ class ArmijoRule(LRScheduler):
     def get_lr(self, iter_number: int = 1,
                        x: np.array = None,
                        p: np.array = None,
-                       beta=0.5, c1=0.1):
+                       beta=0.5, c1=0.01,  **kwargs):
 
         alpha = self.alpha
         fun_value_x = self.function(x)
         if x is None:
             x = np.random.random(self.dimension)
+            print(f"x Armijo: {x}")
         if self.gradient is None:
             find_grad = find_gradient(self.function)
             self.gradient = find_grad.get_value
         grad_x = self.gradient(x)
         if p is None:
             p = -grad_x
+        print(f"p Armijo: {p}")
 
         step_number: int = 1
         curr_value: np.typing.NDArray = x.copy()
@@ -60,14 +62,15 @@ class ArmijoRule(LRScheduler):
 
         while not self.test.should_stop(step=curr_value,
                                         value=self.function(curr_value),
-                                        gradient=self.gradient,
+                                        gradient=grad_x,
                                         iteration=step_number):
             curr_value = curr_value + alpha * p
             fx_new = self.function(curr_value)
             armijo_condition = fx_new <= fun_value_x + c1 * alpha * grad_dot_p
 
             if armijo_condition:
-                return alpha
+                return curr_value
             else:
                 alpha *= beta
-        return self.alpha * p
+        self.alpha = alpha
+        return curr_value

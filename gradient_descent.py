@@ -15,7 +15,7 @@ class gradient_descent:
             dimension: int = 2,
             function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)),
             gradient: tp.Callable[[np.array], np.array] = lambda arg: np.cos(arg),
-            test_criterion: sc.StoppingCriterion = sc.Convergence(),
+            test_criterion: sc.StoppingCriterion = sc.MaxIterations(),
             learning_rate_scheduling: lrs.LRScheduler = lrs.Constant()):
 
         """
@@ -43,6 +43,7 @@ class gradient_descent:
 
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
+            print(f"begining_point: {begining_point}")
         if self.gradient is None:
             find_grad = find_gradient(self.function)
             self.gradient = find_grad.get_value
@@ -50,11 +51,17 @@ class gradient_descent:
         step_number: int = 1
         curr_value: np.typing.NDArray = begining_point.copy()
 
-        while not self.test.should_stop(value=self.function(curr_value), gradient=self.gradient, iteration=step_number):
-            cur_step = self.lrs.get_lr(step_number)
+        while not self.test.should_stop(value=self.function(curr_value),
+                                        gradient=self.gradient,
+                                        iteration=step_number,
+                                        step=curr_value):
+            cur_step = self.lrs.get_lr(iter_number=step_number,
+                                       x=curr_value,
+                                       p=-self.gradient(curr_value))
             curr_value -= cur_step * self.gradient(curr_value)
             step_number += 1
             self.logs.append((step_number, curr_value.copy()))
+        print(step_number)
         return curr_value
 
 
