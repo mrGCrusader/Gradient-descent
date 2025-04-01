@@ -1,4 +1,3 @@
-
 import os
 
 import matplotlib.pyplot as plt
@@ -18,30 +17,14 @@ YOUR_DIR_NAME = os.path.abspath('../ex_graphics/')
 
 
 class Example:
-
-    # def __painting_3d_with_mathplotlib(self, x, y, z, file_name):
-    #     if not os.path.exists(file_name):
-    #         with open(file_name, "wb") as f:
-    #             pass
-
-    #     fig = plt.figure()
-    #     ax = fig.add_subplot(projection='3d')
-
-    #     anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
-    #     ax.scatter(anw[0], anw[1], anw[2], c='b', marker='o')
-    #     ax.scatter(x, y, z, c='r', marker='o')
-
-    #     ax.set_xlabel('X')
-    #     ax.set_ylabel('Y')
-    #     ax.set_zlabel('Z')
-    #     ax.set_title('Траектория градиентного спуска')
-    #     # plt.show()
-    #     # plt.show()
-    #     plt.savefig(file_name)
-        
+    
     def __painting_3d_with_plotly(self, x, y, z, file_name, function):
-        row = np.linspace(max(min(x), -50), min(max(x), 50), 1)  # 50 точек вместо случайных
-        col = np.linspace(max(min(y), -50), min(max(y), 50), 1)
+        x_min, x_max, y_min, y_max = min(x), max(x), min(y), max(y) 
+        
+        x_padding, y_padding = (x_max - x_min) * 0.5, (y_max - y_min) * 0.5
+
+        row = np.linspace(x_min - x_padding, x_max + x_padding, 50)
+        col = np.linspace(y_min - y_padding, y_max + y_padding, 50)
         X, Y = np.meshgrid(row, col)
 
         Z = np.array([[function((x_i, y_j)) for x_i in row] for y_j in col])
@@ -50,8 +33,7 @@ class Example:
         surface = go.Surface(x = X, y = Y, z = Z,
                              opacity=0.7,
                              contours_z={'show': True})        
-        # print(len(x), len(y), len(z))
-        # >> 135 135 135    
+  
         # добавить линию
         scatter = go.Scatter3d(x=x, y=y, z=z,
                 mode='lines+markers',
