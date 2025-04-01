@@ -13,9 +13,15 @@ class LRScheduler:
 
     def __init__(self, initial_lr: float = 0.1):
         self.initial_lr = initial_lr
+        self.iterations = 0
+        self.function_calls = 0
+        self.gradient_calls = 0
 
     def get_lr(self, iter_number=None, **kwargs) -> float:
         raise NotImplementedError("Subclasses must implement this method")
+
+    def get_logs(self) -> tuple[float, float, float]:
+        return self.iterations, self.function_calls, self.gradient_calls
 
 
 class Constant(LRScheduler):
@@ -24,7 +30,9 @@ class Constant(LRScheduler):
     """
 
     def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
+        self.iterations = iter_number
         return self.initial_lr
+
 
 
 class TimeBasedDecay(LRScheduler):
@@ -38,6 +46,8 @@ class TimeBasedDecay(LRScheduler):
         self.hyper_lambda = hyper_lambda
 
     def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
+        self.iterations = iter_number
+
         self.last = self.last / (1 + self.hyper_lambda * iter_number)
         return self.last
 
@@ -53,6 +63,8 @@ class StepDecay(LRScheduler):
         self.step_size = hyper_lambda
 
     def get_lr(self, iter_number: int = 0, **kwargs) -> float:
+        self.iterations = iter_number
+
         return self.initial_lr * (self.hyper_base ** math.floor((1 + iter_number) // self.step_size))
 
 
@@ -66,6 +78,8 @@ class ExponentialDecay(LRScheduler):
         self.hyper_lambda = hyper_lambda
 
     def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
+        self.iterations = iter_number
+
         return self.initial_lr * math.exp(-self.hyper_lambda * iter_number)
 
 
@@ -80,6 +94,8 @@ class PolynomialDecay(LRScheduler):
         self.hyper_beta = hyper_beta
 
     def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
+        self.iterations = iter_number
+
         return self.initial_lr * ((self.hyper_beta * iter_number + 1) ** (-self.hyper_alpha))
 
 class CosineAnnealingLR(LRScheduler):
@@ -91,4 +107,6 @@ class CosineAnnealingLR(LRScheduler):
         self.hyper_lambda = hyper_lambda
 
     def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
+        self.iterations = iter_number
+
         return self.initial_lr * (1 + math.cos(math.pi * iter_number / self.hyper_lambda)) / 2

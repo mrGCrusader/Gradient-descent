@@ -27,7 +27,10 @@ class gradient_descent:
         self.gradient = gradient
         self.test = test_criterion
         self.lrs = learning_rate_scheduling
-        self.logs: list = []
+        self.iterations = 0
+        self.function_calls = 0
+        self.gradient_calls = 0
+        self.points = []
     
     
     def make_min_value(self,
@@ -38,12 +41,12 @@ class gradient_descent:
         loging: print history in stdoutput
         return: returns the point obtained as a result of the algorithm
         """
-        self.logs = []
 
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
             # begining_point = np.array([3.0, 4.0])
             # print(f"begining_point: {begining_point}")
+
         if self.gradient is None:
             find_grad = find_gradient(self.function)
             self.gradient = find_grad.get_value
@@ -55,18 +58,25 @@ class gradient_descent:
                                         gradient=self.gradient,
                                         iteration=step_number,
                                         step=curr_value):
+
+
             cur_step = self.lrs.get_lr(iter_number=step_number,
                                        x=curr_value,
                                        p=-self.gradient(curr_value))
+            lrs_logs = self.lrs.get_logs()
+            self.iterations += lrs_logs[0] + 1
+            self.function_calls += lrs_logs[1] + 1
+            self.gradient_calls += lrs_logs[2] + 1
+
             curr_value -= cur_step * self.gradient(curr_value)
             step_number += 1
-            self.logs.append((step_number, curr_value.copy()))
-        print(step_number)
+            self.points.append((step_number, curr_value.copy()))
+        # print(step_number)
         return curr_value
 
 
-    def get_log(self) -> Optional[list]:
-        if self.logs is []:
-            print("No logs yet")
-            return
-        return self.logs
+    def get_logs(self) -> tuple[float, float, float]:
+        return self.iterations, self.function_calls, self.gradient_calls
+
+    def get_enum_point(self) -> np.array:
+        return self.points

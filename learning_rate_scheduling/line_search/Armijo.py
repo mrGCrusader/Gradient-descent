@@ -42,17 +42,25 @@ class ArmijoRule(LRScheduler):
         alpha = self.alpha
         # print(f"alpha Armijo rule: {alpha}")
         fun_value_x = self.function(x)
+        self.function_calls += 1
+
         if x is None:
             x = np.random.random(self.dimension)
             # print(f"x Armijo: {x}")
+
+
         if self.gradient is None:
             find_grad = find_gradient(self.function)
             self.gradient = find_grad.get_value
         grad_x = self.gradient(x)
+        self.gradient_calls += 1
+
+
         # print(f"grad_x: {grad_x}")
         if p is None:
             p = -grad_x
         # print(f"p Armijo: {p}")
+
 
         step_number: int = 1
         curr_value: np.typing.NDArray = x.copy()
@@ -66,8 +74,11 @@ class ArmijoRule(LRScheduler):
                                         value=self.function(curr_value),
                                         gradient=grad_x,
                                         iteration=step_number):
+            self.iterations += 1
             curr_value = x + alpha * p
             fx_new = self.function(curr_value)
+            self.function_calls += 1
+
             armijo_condition = fx_new <= fun_value_x + c1 * alpha * grad_dot_p
 
             if armijo_condition:

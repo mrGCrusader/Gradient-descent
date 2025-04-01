@@ -55,12 +55,13 @@ class Example:
                     beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
         descent.make_min_value(beginning_point)
-        lst = [point for (_, point) in descent.get_log()]
+        lst = [point for (_, point) in descent.get_enum_point()]
         x = [point[0] for point in lst] 
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
         anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
         self.__painting_3d_with_plotly(x, y, z, file_name, function)
+        print(f"iterations, function_calls, gradient_calls: {descent.get_logs()}")
         return anw
 
 
@@ -93,3 +94,4 @@ if __name__ == "__main__":
     create_dir()
     generator = Generate_test(1)
     generator.generate()
+
