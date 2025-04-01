@@ -1,4 +1,0 @@
-learning_rate_scheduling
-some_scipy
-stop_criteria
-tests
