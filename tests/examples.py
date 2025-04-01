@@ -50,7 +50,7 @@ class Example:
                     function=(lambda point: 20 * point[0] ** 2 + 20 * point[1] ** 2),
                     gradient=None,
                     test_criterion=sc.Convergence(),
-                    learning_rate_scheduling=lrs.Constant(),
+                    learning_rate_scheduling: lrs.LRScheduler() = lrs.Constant(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
                     beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
@@ -73,12 +73,15 @@ class Generate_test:
     def generate(self):
         for num in range(self.count):
             [alpha, bravo, charlie] = np.random.randint(-10, 10, size=3)
+            # alpha, bravo, charlie = 1, 4, 3
+            fun_gen = (lambda point: alpha * point[0] ** 2 + bravo * point[1] ** 2 + charlie * point[1] *
+                                                  point[0])
             self.ex.run_example(dimension=2,
-                                function=(
-                                    lambda point: alpha * point[0] ** 2 + bravo * point[1] ** 2 + charlie * point[1] *
-                                                  point[0]),
+                                function=fun_gen,
                                 gradient=None,
-                                file_name=f'{YOUR_DIR_NAME}/{num}.png'
+                                file_name=f'{YOUR_DIR_NAME}/{num}.png',
+                                learning_rate_scheduling=lrs.ArmijoRule(
+                                    function=fun_gen),
                                 )
 
 def create_dir():

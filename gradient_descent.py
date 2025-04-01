@@ -1,4 +1,3 @@
-print("HERE")
 import typing as tp
 from typing import Optional
 
@@ -43,7 +42,8 @@ class gradient_descent:
 
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
-            print(f"begining_point: {begining_point}")
+            # begining_point = np.array([3.0, 4.0])
+            # print(f"begining_point: {begining_point}")
         if self.gradient is None:
             find_grad = find_gradient(self.function)
             self.gradient = find_grad.get_value
