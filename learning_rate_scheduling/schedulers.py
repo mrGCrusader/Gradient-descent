@@ -1,9 +1,5 @@
 import math
-
-"""
-Идея: держим шаг постоянным до тех пор, пока не определим, что мы застряли в одном месте, и не
-уменьшим шаг. -- надо сделать
-"""
+import typing as tp
 
 
 class LRScheduler:
@@ -11,102 +7,94 @@ class LRScheduler:
     Abstract base class for learning rate schedulers.
     """
 
-    def __init__(self, initial_lr: float = 0.1):
+    def __init__(self, initial_lr: float = 0.1, dimension: int = 2):
         self.initial_lr = initial_lr
+        self.dimension = dimension
         self.iterations = 0
         self.function_calls = 0
         self.gradient_calls = 0
 
-    def get_lr(self, iter_number=None, **kwargs) -> float:
+    def get_lr(self, iter_number: tp.Optional[int] = None, **kwargs) -> float:
         raise NotImplementedError("Subclasses must implement this method")
 
-    def get_logs(self) -> tuple[float, float, float]:
+    def get_logs(self) -> tuple[int, int, int]:
+        """Returns (iterations_count, function_calls, gradient_calls)"""
         return self.iterations, self.function_calls, self.gradient_calls
+
+    def _update_counters(self, iter_number: int):
+        self.iterations = iter_number if iter_number is not None else self.iterations + 1
 
 
 class Constant(LRScheduler):
-    """
-    just a constant learning rate
-    """
+    """Constant learning rate"""
 
-    def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
-        self.iterations = iter_number
+    def get_lr(self, iter_number: int = None, **kwargs) -> float:
+        self._update_counters(iter_number)
         return self.initial_lr
 
 
-
 class TimeBasedDecay(LRScheduler):
-    """
-    h(k + 1) = h(k) / (1 + l * k)
-    """
+    """h(k) = h0 / (1 + λ*k)"""
 
-    def __init__(self, initial_lr: float = 0.1, hyper_lambda: int = 1):
+    def __init__(self, initial_lr: float = 0.1, decay_rate: float = 0.1):
         super().__init__(initial_lr)
-        self.last = initial_lr
-        self.hyper_lambda = hyper_lambda
+        self.decay_rate = decay_rate
 
-    def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
-        self.iterations = iter_number
-
-        self.last = self.last / (1 + self.hyper_lambda * iter_number)
-        return self.last
+    def get_lr(self, iter_number: int = None, **kwargs) -> float:
+        self._update_counters(iter_number)
+        k = self.iterations
+        return self.initial_lr / (1 + self.decay_rate * k)
 
 
 class StepDecay(LRScheduler):
-    """
-    h(k) = h_0 * d ** floor((1 + k) // step_size)
-    """
+    """h(k) = h0 * β^floor(k/step)"""
 
-    def __init__(self, initial_lr: float = 0.1, hyper_base: int = 2, hyper_lambda: int = 1):
+    def __init__(self, initial_lr: float = 0.1, step_size: int = 10, decay_factor: float = 0.5):
         super().__init__(initial_lr)
-        self.hyper_base = hyper_base
-        self.step_size = hyper_lambda
+        self.step_size = step_size
+        self.decay_factor = decay_factor
 
-    def get_lr(self, iter_number: int = 0, **kwargs) -> float:
-        self.iterations = iter_number
-
-        return self.initial_lr * (self.hyper_base ** math.floor((1 + iter_number) // self.step_size))
+    def get_lr(self, iter_number: int = None, **kwargs) -> float:
+        self._update_counters(iter_number)
+        k = self.iterations
+        return self.initial_lr * (self.decay_factor ** math.floor(k / self.step_size))
 
 
 class ExponentialDecay(LRScheduler):
-    """
-    h(k) = h_0 * exp(-l * k)
-    """
+    """h(k) = h0 * exp(-λ*k)"""
 
-    def __init__(self, initial_lr: float = 0.1, hyper_lambda: int = 1):
+    def __init__(self, initial_lr: float = 0.1, decay_rate: float = 0.1):
         super().__init__(initial_lr)
-        self.hyper_lambda = hyper_lambda
+        self.decay_rate = decay_rate
 
-    def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
-        self.iterations = iter_number
-
-        return self.initial_lr * math.exp(-self.hyper_lambda * iter_number)
+    def get_lr(self, iter_number: int = None, **kwargs) -> float:
+        self._update_counters(iter_number)
+        k = self.iterations
+        return self.initial_lr * math.exp(-self.decay_rate * k)
 
 
 class PolynomialDecay(LRScheduler):
-    """
-    h(k) = h_0 * (beta * k + 1) ** (-alpha)
-    """
+    """h(k) = h0 * (β*k + 1)^(-α)"""
 
-    def __init__(self, initial_lr: float = 0.1, hyper_alpha: float = 0.5, hyper_beta: float = 1):
+    def __init__(self, initial_lr: float = 0.1, alpha: float = 0.5, beta: float = 1.0):
         super().__init__(initial_lr)
-        self.hyper_alpha = hyper_alpha
-        self.hyper_beta = hyper_beta
+        self.alpha = alpha
+        self.beta = beta
 
-    def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
-        self.iterations = iter_number
+    def get_lr(self, iter_number: int = None, **kwargs) -> float:
+        self._update_counters(iter_number)
+        k = self.iterations
+        return self.initial_lr * ((self.beta * k + 1) ** (-self.alpha))
 
-        return self.initial_lr * ((self.hyper_beta * iter_number + 1) ** (-self.hyper_alpha))
 
 class CosineAnnealingLR(LRScheduler):
-    """
-    h(k) = h_0 * (1 + cos(k * pi)) / 2
-    """
-    def __init__(self, initial_lr, hyper_lambda: float = 1):
+    """h(k) = h0*(1 + cos(π*k/T))/2"""
+
+    def __init__(self, initial_lr: float = 0.1, cycle_length: int = 10):
         super().__init__(initial_lr)
-        self.hyper_lambda = hyper_lambda
+        self.cycle_length = cycle_length
 
-    def get_lr(self, iter_number: int = 0,  **kwargs) -> float:
-        self.iterations = iter_number
-
-        return self.initial_lr * (1 + math.cos(math.pi * iter_number / self.hyper_lambda)) / 2
+    def get_lr(self, iter_number: int = None, **kwargs) -> float:
+        self._update_counters(iter_number)
+        k = self.iterations
+        return self.initial_lr * (1 + math.cos(math.pi * k / self.cycle_length)) / 2
