@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-import gradient_descent as gd  # Теперь импорт работает
+import gradient_descent as gd
 import learning_rate_scheduling as lrs
 import stop_criteria as sc
 import plotly.graph_objects as go
@@ -90,8 +90,27 @@ def create_dir():
         if YOUR_DIR_NAME not in sys.path:
             os.makedirs(YOUR_DIR_NAME)
 
+def first_ex(ex: Example):
+    
+    ex.run_example(dimension=2,
+                   function=lambda x: x[0]**2 + x[1]**2,
+                   gradient=None,
+                   beginning_point=np.array([10., 10.]))
+    
+    
+def second_ex(ex: Example):
+    ex.run_example( dimension= 2,
+        function= lambda x: max(x[0]**2 + x[1] - 2, x[0]**2 - x[1] - 2) + 10,
+        gradient=None,
+        beginning_point=np.array([0., 0.])
+    )
 if __name__ == "__main__":
-    create_dir()
-    generator = Generate_test(1)
-    generator.generate()
+    # create_dir()
+    # generator = Generate_test(1)
+    # generator.generate()
+    ex = Example()
+    # first_ex(ex)
+    second_ex(ex)
+    
+    
 

@@ -6,6 +6,7 @@ class find_gradient:
         self.function = function
 
     def get_value(self, point: np.array, delta=1e-6) -> np.array:
+        print("Gradient_first")
         default_value = self.function(point)
         anw = np.zeros_like(point)
 

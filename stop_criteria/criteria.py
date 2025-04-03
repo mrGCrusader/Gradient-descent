@@ -124,6 +124,6 @@ class Combine(StoppingCriterion):
         self.stop2 = stop2
 
 
-    def should_stop(self, gradient: np.typing.NDArray, **kwargs) -> bool:
+    def should_stop(self, gradient, **kwargs) -> bool:
         return (self.stop1.should_stop(**kwargs) or
                 self.stop2.should_stop(**kwargs))
