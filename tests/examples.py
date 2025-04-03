@@ -6,10 +6,14 @@ import numpy as np
 import sys
 from pathlib import Path
 
+from learning_rate_scheduling import LRScheduler, Constant, StepDecay
+# from line_search import GoldenSectionSearch, ArmijoRule, GoldsteinRule, SciPyLineSearch
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 import gradient_descent as gd
 import learning_rate_scheduling as lrs
+
 import stop_criteria as sc
 import plotly.graph_objects as go
 
@@ -50,7 +54,7 @@ class Example:
                     function=(lambda point: 20 * point[0] ** 2 + 20 * point[1] ** 2),
                     gradient=None,
                     test_criterion=sc.Convergence(),
-                    learning_rate_scheduling: lrs.LRScheduler() = lrs.Constant(),
+                    learning_rate_scheduling: LRScheduler() = Constant(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
                     beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
@@ -73,7 +77,7 @@ class Generate_test:
 
     def generate(self):
         for num in range(self.count):
-            [alpha, bravo, charlie] = np.random.randint(-10, 10, size=3)
+            [alpha, bravo, charlie] = np.random.randint(1, 10, size=3)
             # alpha, bravo, charlie = 1, 4, 3
             fun_gen = (lambda point: alpha * point[0] ** 2 + bravo * point[1] ** 2 + charlie * point[1] *
                                                   point[0])
@@ -81,8 +85,7 @@ class Generate_test:
                                 function=fun_gen,
                                 gradient=None,
                                 file_name=f'{YOUR_DIR_NAME}/{num}.png',
-                                learning_rate_scheduling=lrs.ArmijoRule(
-                                    function=fun_gen),
+                                learning_rate_scheduling=StepDecay()
                                 )
 
 def create_dir():
@@ -105,12 +108,12 @@ def second_ex(ex: Example):
         beginning_point=np.array([0., 0.])
     )
 if __name__ == "__main__":
-    # create_dir()
-    # generator = Generate_test(1)
-    # generator.generate()
-    ex = Example()
-    # first_ex(ex)
-    second_ex(ex)
+    create_dir()
+    generator = Generate_test(1)
+    generator.generate()
+    # ex = Example()
+    # # first_ex(ex)
+    # second_ex(ex)
     
     
 
