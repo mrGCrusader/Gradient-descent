@@ -74,7 +74,6 @@ class gradient_descent:
         # print(step_number)
         return curr_value
 
-
     def get_logs(self) -> tuple[float, float, float]:
         return self.iterations, self.function_calls, self.gradient_calls
 

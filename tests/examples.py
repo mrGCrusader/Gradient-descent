@@ -10,7 +10,7 @@ from learning_rate_scheduling import LRScheduler, Constant, StepDecay
 # from line_search import GoldenSectionSearch, ArmijoRule, GoldsteinRule, SciPyLineSearch
 
 sys.path.append(str(Path(__file__).parent.parent))
-
+import math
 import gradient_descent as gd
 import learning_rate_scheduling as lrs
 
@@ -78,7 +78,6 @@ class Generate_test:
     def generate(self):
         for num in range(self.count):
             [alpha, bravo, charlie] = np.random.randint(1, 10, size=3)
-            # alpha, bravo, charlie = 1, 4, 3
             fun_gen = (lambda point: alpha * point[0] ** 2 + bravo * point[1] ** 2 + charlie * point[1] *
                                                   point[0])
             self.ex.run_example(dimension=2,
@@ -93,27 +92,47 @@ def create_dir():
         if YOUR_DIR_NAME not in sys.path:
             os.makedirs(YOUR_DIR_NAME)
 
-def first_ex(ex: Example):
+def ex_sample(func, test_criterion = sc.Convergence()):
+    for i in (lrs.Constant(), lrs.TimeBasedDecay(), lrs.ExponentialDecay()):
+        print(ex.run_example(dimension=2,
+                       function=func,
+                       gradient=None,
+                       learning_rate_scheduling=i,
+                       test_criterion=test_criterion,
+                       beginning_point=np.array([10., 10.]))[0])
+
+def first_ex():
+    func = lambda x: x[0]**2 + x[1]**2
+    ex_sample(func)
     
-    ex.run_example(dimension=2,
-                   function=lambda x: x[0]**2 + x[1]**2,
-                   gradient=None,
-                   beginning_point=np.array([10., 10.]))
     
+def second_ex():
+    """
+    bad function for this graphic
+    """
+    func = lambda x: max(x[0]**2 + x[1] - 2, x[0]**2 - x[1] - 2) + 10
+    ex_sample(func)
+
+def third_ex():
+    """
+    very bad function without min value
+    """
+    func = lambda x:  x[0]**2 + x[1] - 1
+    ex_sample(func, sc.MaxIterations(200))
     
-def second_ex(ex: Example):
-    ex.run_example( dimension= 2,
-        function= lambda x: max(x[0]**2 + x[1] - 2, x[0]**2 - x[1] - 2) + 10,
-        gradient=None,
-        beginning_point=np.array([0., 0.])
-    )
+def fourth_ex():
+    """
+    sphere
+    """
+    func = lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10)
+    ex_sample(func, sc.MaxIterations(200))
+    
 if __name__ == "__main__":
-    create_dir()
-    generator = Generate_test(1)
-    generator.generate()
-    # ex = Example()
-    # # first_ex(ex)
+    ex = Example()
+    # first_ex(ex)
     # second_ex(ex)
+    # third_ex()
+    # fourth_ex()
     
     
 
