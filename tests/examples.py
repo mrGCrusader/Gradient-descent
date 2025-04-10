@@ -45,8 +45,13 @@ class Example:
                 marker=dict(size=3)
             )
         
+        # добавляем последнюю точку
+        last_point = go.Scatter3d(x=[x[-1]], y=[y[-1]], z=[z[-1]],
+            mode='markers',
+            marker=dict(color='green', size=6)
+        )   
         # управляет изображением
-        fig = go.Figure(data=[scatter, surface])
+        fig = go.Figure(data=[scatter, surface, last_point])
         fig.show()
 
     def run_example(self,
@@ -63,6 +68,10 @@ class Example:
         x = [point[0] for point in lst] 
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
+        for i in range(len(x)):
+            print(x[i], end = " ")
+            print(y[i], end = ' ')
+            print(z[i])
         anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
         self.__painting_3d_with_plotly(x, y, z, file_name, function)
         print(f"iterations, function_calls, gradient_calls: {descent.get_logs()}")
@@ -92,14 +101,15 @@ def create_dir():
         if YOUR_DIR_NAME not in sys.path:
             os.makedirs(YOUR_DIR_NAME)
 
-def ex_sample(func, test_criterion = sc.Convergence()):
+def ex_sample(func, test_criterion = sc.Convergence(), gradient = None, beginning_point = np.array([10., 10.])):
     for i in (lrs.Constant(), lrs.TimeBasedDecay(), lrs.ExponentialDecay()):
-        print(ex.run_example(dimension=2,
+        anw = ex.run_example(dimension=2,
                        function=func,
-                       gradient=None,
+                       gradient=gradient,
                        learning_rate_scheduling=i,
                        test_criterion=test_criterion,
-                       beginning_point=np.array([10., 10.]))[0])
+                       beginning_point=beginning_point)[0]
+        print(f'anw = {anw}')
 
 def first_ex():
     func = lambda x: x[0]**2 + x[1]**2
@@ -111,7 +121,7 @@ def second_ex():
     bad function for this graphic
     """
     func = lambda x: max(x[0]**2 + x[1] - 2, x[0]**2 - x[1] - 2) + 10
-    ex_sample(func)
+    ex_sample(func, sc.MaxIterations(200))
 
 def third_ex():
     """
@@ -122,17 +132,27 @@ def third_ex():
     
 def fourth_ex():
     """
-    sphere
+    strange_function
     """
     func = lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10)
     ex_sample(func, sc.MaxIterations(200))
-    
+
+def fivth_ex():
+    """
+    rozenbrok function
+    """
+    func = lambda x: (1 - x[0]) ** 2 + 100 * (x[1] - x[0]**2)**2 
+    ex_sample(func, sc.MaxIterations(200), gradient= lambda x: 
+        np.array([4 * (x[0]**3) - 400 * x[0] * x[1] - 2 + 2 * x[0], 200 * x[1] - 200 * (x[0]**2)]),
+        beginning_point=np.array([1., 1.]))
+
 if __name__ == "__main__":
     ex = Example()
-    # first_ex(ex)
-    # second_ex(ex)
+    # first_ex()
+    # second_ex()
     # third_ex()
     # fourth_ex()
+    fivth_ex()
     
     
 

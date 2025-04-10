@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 class find_gradient:
 
     def __init__(self, function):
@@ -13,5 +13,4 @@ class find_gradient:
             point[i] += delta
             anw[i] = self.function(point) - default_value
             point[i] -= delta
-
         return anw / delta

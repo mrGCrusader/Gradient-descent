@@ -70,8 +70,11 @@ class gradient_descent:
 
             curr_value -= cur_step * self.gradient(curr_value)
             step_number += 1
+            for i in curr_value:
+                if i == float('-inf') or i == float('inf'):
+                    self.points.append((step_number, np.array([0. for _ in range(self.dimension)])))
+                    return curr_value
             self.points.append((step_number, curr_value.copy()))
-        # print(step_number)
         return curr_value
 
     def get_logs(self) -> tuple[float, float, float]:
