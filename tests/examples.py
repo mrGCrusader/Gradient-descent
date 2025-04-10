@@ -146,13 +146,21 @@ def fivth_ex():
         np.array([4 * (x[0]**3) - 400 * x[0] * x[1] - 2 + 2 * x[0], 200 * x[1] - 200 * (x[0]**2)]),
         beginning_point=np.array([1., 1.]))
 
+def sixth_ex():
+    """
+    one more good function
+    """
+    func = lambda x: x[0] ** 2 + x[1] ** 2 + (x[0] ** 2) * x[1] + x[0] ** 4
+    ex_sample(func, sc.MaxIterations(200))
+
 if __name__ == "__main__":
     ex = Example()
     # first_ex()
     # second_ex()
     # third_ex()
     # fourth_ex()
-    fivth_ex()
+    # fivth_ex()
+    sixth_ex()
     
     
 
