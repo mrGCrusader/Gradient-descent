@@ -68,10 +68,10 @@ class Example:
         x = [point[0] for point in lst] 
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
-        for i in range(len(x)):
-            print(x[i], end = " ")
-            print(y[i], end = ' ')
-            print(z[i])
+        # for i in range(len(x)):
+        #     print(x[i], end = " ")
+        #     print(y[i], end = ' ')
+        #     print(z[i])
         anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
         self.__painting_3d_with_plotly(x, y, z, file_name, function)
         print(f"iterations, function_calls, gradient_calls: {descent.get_logs()}")
@@ -151,6 +151,13 @@ def sixth_ex():
     one more good function
     """
     func = lambda x: x[0] ** 2 + x[1] ** 2 + (x[0] ** 2) * x[1] + x[0] ** 4
+    ex_sample(func, beginning_point=np.array([2., 2.]))
+
+def seventh_ex():
+    """
+    Happy cat function
+    """
+    func = lambda x: (((x[0]**2 + x[1]**2)**(1/2) - 2)**2)**(1/8) + 1/2*(1/2*(x[0]**2+x[1]**2)**(1/2) + x[0] + x[1]) + 1/2
     ex_sample(func, sc.MaxIterations(200))
 
 if __name__ == "__main__":
@@ -161,6 +168,7 @@ if __name__ == "__main__":
     # fourth_ex()
     # fivth_ex()
     sixth_ex()
+    # seventh_ex()
     
     
 
