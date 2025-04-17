@@ -145,7 +145,7 @@ def eight_ex():
 
 
 
-def ex_sample1(func, str_decay, gradient=None, beginning_point=np.array([10., 10.])):
+def ex_sample1(func, str_decay, it_count = 300, gradient=None, beginning_point=np.array([10., 10.])):
     mp2 = {
         "time" : lrs.TimeBasedDecay(),
         "exp" : lrs.ExponentialDecay(),
@@ -154,22 +154,54 @@ def ex_sample1(func, str_decay, gradient=None, beginning_point=np.array([10., 10
 
         "armijo" : ls.ArmijoRule(function=func),
         "goldstein" : ls.GoldsteinRule(function=func),
-        "goldensection" :  ls.GoldenSectionSearch(function=func)
+        "scipy" :  ls.SciPyLineSearch(function=func)
     }
     anw = ex.run_example(dimension=2,
                          function=func,
                          gradient=gradient,
                          learning_rate_scheduling=mp2[str_decay],
-                         test_criterion=sc.MaxIterations(300),
+                         test_criterion=sc.MaxIterations(it_count),
                          beginning_point=beginning_point)[0]
     print(str_decay, anw)
 
-def run():
+def run1():
+    func = lambda x: 01. * x[0]**2 + 2 * x[1]**2
+    ex_sample1(func, "time", it_count=10000)
+    ex_sample1(func, "exp", it_count=10000)
+    ex_sample1(func, "const", it_count=10000)
+    ex_sample1(func, "poly", it_count=10000)
+    ex_sample1(func, "time", it_count=100000)
+    ex_sample1(func, "exp", it_count=100000)
+    ex_sample1(func, "const", it_count=100000)
+    ex_sample1(func, "poly", it_count=100000)
+def run2():
+    func = lambda x: 0.1 * x[0]**2 + 2 * x[1]**2
+    ex_sample1(func, "time", it_count=10000)
+    ex_sample1(func, "exp", it_count=10000)
+    ex_sample1(func, "const", it_count=10000)
+    ex_sample1(func, "poly", it_count=10000)
+    ex_sample1(func, "time", it_count=100000)
+    ex_sample1(func, "exp", it_count=100000)
+    ex_sample1(func, "const", it_count=100000)
+    ex_sample1(func, "poly", it_count=100000)
+
+def run2_hard():
+    func = lambda x: 0.1 * x[0]**2 + 2 * x[1]**2
+    ex_sample1(func, "armijo", it_count=10000)
+    ex_sample1(func, "goldstein", it_count=10000)
+    ex_sample1(func, "scipy", it_count=10000)
+    ex_sample1(func, "armijo", it_count=100000)
+    ex_sample1(func, "goldstein", it_count=100000)
+    ex_sample1(func, "goldensection", it_count=100000)
+
+def run1_hard():
     func = lambda x: x[0]**2 + x[1]**2
-    ex_sample1(func, "time")
-    ex_sample1(func, "exp")
-    ex_sample1(func, "const")
-    ex_sample1(func, "poly")
+    ex_sample1(func, "armijo", it_count=10000)
+    ex_sample1(func, "goldstein", it_count=10000)
+    ex_sample1(func, "scipy", it_count=10000)
+    ex_sample1(func, "armijo", it_count=100000)
+    ex_sample1(func, "goldstein", it_count=100000)
+    ex_sample1(func, "scipy", it_count=100000)
 def nine_ex():
     """
     one more
@@ -180,8 +212,11 @@ def nine_ex():
 
 if __name__ == "__main__":
     ex = Example()
+    # run1_hard()
     # nine_ex()
-    run()
+    # run2()
+    ex_sample1(lambda x : x[0]**2 + 1, "scipy", it_count=100000)
+    # run2_hard()
     # ex_sample1("armijo", "iter10000")
     # eight_ex()
 
