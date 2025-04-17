@@ -64,14 +64,14 @@ class Example:
                     test_criterion: sc.StoppingCriterion =sc.Convergence(),
                     learning_rate_scheduling: LRScheduler = Constant(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
-                    beginning_point=None):
+                    beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
         descent.make_min_value(beginning_point)
         lst = [point for (_, point) in descent.get_enum_point()]
         x = [point[0] for point in lst]
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
-        anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
+        anw = [x[-1], y[-1], z[-1]]
         self.__painting_3d_with_plotly(x, y, z, file_name, function)
         print(f"iterations, function_calls, gradient_calls: {descent.get_logs()}")
         return anw
@@ -108,6 +108,7 @@ def ex_sample(func, test_criterion = sc.Convergence(), gradient = None, beginnin
                              learning_rate_scheduling=i,
                              test_criterion=test_criterion,
                              beginning_point=beginning_point)[0]
+        print(anw)
         print(f'anw = {anw}')
 
 def first_ex():
@@ -154,54 +155,28 @@ def ex_sample1(func, str_decay, it_count = 300, gradient=None, beginning_point=n
 
         "armijo" : ls.ArmijoRule(function=func),
         "goldstein" : ls.GoldsteinRule(function=func),
-        "scipy" :  ls.SciPyLineSearch(function=func)
+        "scipy" :  ls.SciPyLineSearch(function=func),
+        "goldensection" :  ls.GoldenSectionSearch(function=func),
     }
     anw = ex.run_example(dimension=2,
                          function=func,
                          gradient=gradient,
                          learning_rate_scheduling=mp2[str_decay],
                          test_criterion=sc.MaxIterations(it_count),
-                         beginning_point=beginning_point)[0]
+                         beginning_point=beginning_point)[2]
     print(str_decay, anw)
 
-def run1():
-    func = lambda x: 01. * x[0]**2 + 2 * x[1]**2
-    ex_sample1(func, "time", it_count=10000)
-    ex_sample1(func, "exp", it_count=10000)
-    ex_sample1(func, "const", it_count=10000)
-    ex_sample1(func, "poly", it_count=10000)
-    ex_sample1(func, "time", it_count=100000)
-    ex_sample1(func, "exp", it_count=100000)
-    ex_sample1(func, "const", it_count=100000)
-    ex_sample1(func, "poly", it_count=100000)
-def run2():
-    func = lambda x: 0.1 * x[0]**2 + 2 * x[1]**2
-    ex_sample1(func, "time", it_count=10000)
-    ex_sample1(func, "exp", it_count=10000)
-    ex_sample1(func, "const", it_count=10000)
-    ex_sample1(func, "poly", it_count=10000)
-    ex_sample1(func, "time", it_count=100000)
-    ex_sample1(func, "exp", it_count=100000)
-    ex_sample1(func, "const", it_count=100000)
-    ex_sample1(func, "poly", it_count=100000)
-
-def run2_hard():
-    func = lambda x: 0.1 * x[0]**2 + 2 * x[1]**2
-    ex_sample1(func, "armijo", it_count=10000)
-    ex_sample1(func, "goldstein", it_count=10000)
-    ex_sample1(func, "scipy", it_count=10000)
-    ex_sample1(func, "armijo", it_count=100000)
-    ex_sample1(func, "goldstein", it_count=100000)
-    ex_sample1(func, "goldensection", it_count=100000)
-
-def run1_hard():
-    func = lambda x: x[0]**2 + x[1]**2
-    ex_sample1(func, "armijo", it_count=10000)
-    ex_sample1(func, "goldstein", it_count=10000)
-    ex_sample1(func, "scipy", it_count=10000)
-    ex_sample1(func, "armijo", it_count=100000)
-    ex_sample1(func, "goldstein", it_count=100000)
-    ex_sample1(func, "scipy", it_count=100000)
+def run(func, counts):
+    for x in counts:
+        ex_sample1(func, "time", it_count=x)
+        ex_sample1(func, "exp", it_count=x)
+        ex_sample1(func, "const", it_count=x)
+        ex_sample1(func, "poly", it_count=x)
+def run_hard(func, counts):
+    for x in counts:
+        ex_sample1(func, "armijo", it_count=x)
+        ex_sample1(func, "goldstein", it_count=x)
+        ex_sample1(func, "scipy", it_count=x)
 def nine_ex():
     """
     one more
@@ -212,10 +187,16 @@ def nine_ex():
 
 if __name__ == "__main__":
     ex = Example()
+    run(lambda x: 0.1 * x[0]**2 + 2 * x[1]**2, [1000, 10000])
+    run_hard(lambda x: 0.1 * x[0]**2 + 2 * x[1]**2g, [1000, 10000])
+    # run1_hard()
+    # ex_sample1(lambda x : x[0] ** 2 + 2, "goldstein", it_count=1000)
+    # ex_sample1(lambda x : x[0] ** 2 + 2, "armijo", it_count=1000)
+    # ex_sample1(lambda x : x[0] ** 2 + 2, "scipy", it_count=1000)
     # run1_hard()
     # nine_ex()
     # run2()
-    ex_sample1(lambda x : x[0]**2 + 1, "scipy", it_count=100000)
+    # ex_sample1(lambda x : x[0]**2 + 1, "scipy", it_count=100000)
     # run2_hard()
     # ex_sample1("armijo", "iter10000")
     # eight_ex()
