@@ -17,7 +17,7 @@ class LRScheduler:
     def get_lr(self, iter_number: tp.Optional[int] = None, **kwargs) -> float:
         raise NotImplementedError("Subclasses must implement this method")
 
-    def get_logs(self) -> tuple[int, int, int]:
+    def get_logs_sc(self) -> tuple[int, int, int]:
         """Returns (iterations_count, function_calls, gradient_calls)"""
         return self.iterations, self.function_calls, self.gradient_calls
 

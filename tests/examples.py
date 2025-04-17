@@ -68,10 +68,6 @@ class Example:
         x = [point[0] for point in lst] 
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
-        # for i in range(len(x)):
-        #     print(x[i], end = " ")
-        #     print(y[i], end = ' ')
-        #     print(z[i])
         anw = [x[len(x) - 1], y[len(y) - 1], z[len(z) - 1]]
         self.__painting_3d_with_plotly(x, y, z, file_name, function)
         print(f"iterations, function_calls, gradient_calls: {descent.get_logs()}")
@@ -113,7 +109,7 @@ def ex_sample(func, test_criterion = sc.Convergence(), gradient = None, beginnin
 
 def first_ex():
     func = lambda x: x[0]**2 + x[1]**2
-    ex_sample(func)
+    ex_sample(func, sc.Convergence())
     
     
 def second_ex():
@@ -165,13 +161,13 @@ def eight_ex():
     noisy function
     """ 
     func = lambda x: x[0]**2 + x[1]**2 + random.random()
-    ex_sample(func, sc.MaxIterations(200))
+    ex_sample(func, sc.MaxIterations(300))
 
 
 if __name__ == "__main__":
     ex = Example()
     # eight_ex()
-    first_ex()
+    # first_ex()
     # second_ex()
     # third_ex()
     # fourth_ex()

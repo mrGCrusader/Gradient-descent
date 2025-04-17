@@ -28,7 +28,7 @@ class gradient_descent:
         self.gradient = gradient
         self.test = test_criterion
         self.lrs = learning_rate_scheduling
-        self.iterations = 0
+        self.step_number = 0
         self.function_calls = 0
         self.gradient_calls = 0
         self.points = []
@@ -51,34 +51,33 @@ class gradient_descent:
             find_grad = find_gradient(self.function)
             self.gradient = find_grad.get_modifier_value if self.need_good_grad else find_grad.get_value
 
-        step_number: int = 1
+        self.step_number: int = 1
         curr_value: np.typing.NDArray = begining_point.copy()
 
         while not self.test.should_stop(value=self.function(curr_value),
                                         gradient=self.gradient,
-                                        iteration=step_number,
+                                        iteration=self.step_number,
                                         step=curr_value):
-
-
-            cur_step = self.lrs.get_lr(iter_number=step_number,
+            self.step_number += 1
+            cur_step = self.lrs.get_lr(iter_number=self.step_number,
                                        x=curr_value,
                                        p=-self.gradient(curr_value))
-            lrs_logs = self.lrs.get_logs()
-            self.iterations += lrs_logs[0] + 1
+            lrs_logs = self.lrs.get_logs_sc()
+
             self.function_calls += lrs_logs[1] + 1
             self.gradient_calls += lrs_logs[2] + 1
 
             curr_value -= cur_step * self.gradient(curr_value)
-            step_number += 1
+
             for i in curr_value:
                 if i == float('-inf') or i == float('inf'):
-                    self.points.append((step_number, np.array([0. for _ in range(self.dimension)])))
+                    self.points.append((self.step_number, np.array([0. for _ in range(self.dimension)])))
                     return curr_value
-            self.points.append((step_number, curr_value.copy()))
+            self.points.append((self.step_number, curr_value.copy()))
         return curr_value
 
     def get_logs(self) -> tuple[float, float, float]:
-        return self.iterations, self.function_calls, self.gradient_calls
+        return self.step_number, self.function_calls, self.gradient_calls
 
     def get_enum_point(self) -> np.array:
         return self.points
