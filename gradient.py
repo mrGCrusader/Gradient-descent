@@ -11,6 +11,9 @@ class find_gradient:
 
         for i in range(len(point)):
             point[i] += delta
+            print(default_value)
+            print(self.function(point))
+            print(self.function(point) - default_value)
             anw[i] = self.function(point) - default_value
             point[i] -= delta
         return anw / delta
@@ -19,7 +22,7 @@ class find_gradient:
         square = point * point
         return math.sqrt(square.sum())
     
-    def get_modifier_value(self, point: np.array, delta=1e-6, upper_bound=10) -> np.array:
+    def get_modifier_value(self, point: np.array, delta=1e-6, upper_bound=4.) -> np.array:
         default_value = self.function(point)
         anw = np.zeros_like(point)
 

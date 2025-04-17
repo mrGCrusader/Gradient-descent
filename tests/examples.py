@@ -13,7 +13,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 import math
 import gradient_descent as gd
 import learning_rate_scheduling as lrs
-
+import random
 import stop_criteria as sc
 import plotly.graph_objects as go
 
@@ -58,8 +58,8 @@ class Example:
                     dimension=2,
                     function=(lambda point: 20 * point[0] ** 2 + 20 * point[1] ** 2),
                     gradient=None,
-                    test_criterion=sc.Convergence(),
-                    learning_rate_scheduling: LRScheduler() = Constant(),
+                    test_criterion: sc.StoppingCriterion =sc.Convergence(),
+                    learning_rate_scheduling: LRScheduler = Constant(),
                     file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
                     beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
@@ -160,15 +160,14 @@ def seventh_ex():
     func = lambda x: (((x[0]**2 + x[1]**2)**(1/2) - 2)**2)**(1/8) + 1/2*(1/2*(x[0]**2+x[1]**2)**(1/2) + x[0] + x[1]) + 1/2
     ex_sample(func, sc.MaxIterations(200))
 
+def eight_ex():
+    """
+    noisy function
+    """ 
+    func = lambda x: x[0]**2 + x[1]**2 + random.random()
+    ex_sample(func, sc.MaxIterations(200))
+
+
 if __name__ == "__main__":
     ex = Example()
-    # first_ex()
-    # second_ex()
-    # third_ex()
-    # fourth_ex()
-    # fivth_ex()
-    sixth_ex()
-    # seventh_ex()
-    
-    
-
+    eight_ex()

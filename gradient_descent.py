@@ -15,7 +15,8 @@ class gradient_descent:
             function: tp.Callable[[np.array], float] = lambda arg: np.sum(np.sin(arg)),
             gradient: tp.Callable[[np.array], np.array] = lambda arg: np.cos(arg),
             test_criterion: sc.StoppingCriterion = sc.MaxIterations(),
-            learning_rate_scheduling: lrs.LRScheduler = lrs.Constant()):
+            learning_rate_scheduling: lrs.LRScheduler = lrs.Constant(),
+            need_good_grad: bool = False):
 
         """
         are you serious man? хочешь написать комментарий для init????
@@ -31,6 +32,7 @@ class gradient_descent:
         self.function_calls = 0
         self.gradient_calls = 0
         self.points = []
+        self.need_good_grad = need_good_grad
     
     
     def make_min_value(self,
@@ -44,12 +46,10 @@ class gradient_descent:
 
         if begining_point is None:
             begining_point = np.random.random(self.dimension)
-            # begining_point = np.array([3.0, 4.0])
-            # print(f"begining_point: {begining_point}")
 
         if self.gradient is None:
             find_grad = find_gradient(self.function)
-            self.gradient = find_grad.get_value
+            self.gradient = find_grad.get_modifier_value if self.need_good_grad else find_grad.get_value
 
         step_number: int = 1
         curr_value: np.typing.NDArray = begining_point.copy()
