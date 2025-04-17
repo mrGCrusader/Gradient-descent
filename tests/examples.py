@@ -170,4 +170,12 @@ def eight_ex():
 
 if __name__ == "__main__":
     ex = Example()
-    eight_ex()
+    # eight_ex()
+    first_ex()
+    # second_ex()
+    # third_ex()
+    # fourth_ex()
+    # fivth_ex()
+    # sixth_ex()
+    # seventh_ex()
+
