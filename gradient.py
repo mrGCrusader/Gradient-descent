@@ -11,9 +11,14 @@ class find_gradient:
 
         for i in range(len(point)):
             point[i] += delta
-            anw[i] = self.function(point) - default_value
+            anw[i] = self.function(point)
             point[i] -= delta
-        return anw / delta
+
+            point[i] -= delta
+            anw[i] = anw[i] - self.function(point)
+            point[i] += delta
+
+        return anw / (2 * delta)
 
     def __find_norm(point: np.array) -> np.array:
         square = point * point
