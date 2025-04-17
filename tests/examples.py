@@ -174,9 +174,9 @@ def run(func, counts):
         ex_sample1(func, "poly", it_count=x)
 def run_hard(func, counts):
     for x in counts:
+        ex_sample1(func, "scipy", it_count=x)
         ex_sample1(func, "armijo", it_count=x)
         ex_sample1(func, "goldstein", it_count=x)
-        ex_sample1(func, "scipy", it_count=x)
 def nine_ex():
     """
     one more
@@ -187,8 +187,8 @@ def nine_ex():
 
 if __name__ == "__main__":
     ex = Example()
-    run(lambda x: 0.1 * x[0]**2 + 2 * x[1]**2, [1000, 10000])
-    run_hard(lambda x: 0.1 * x[0]**2 + 2 * x[1]**2g, [1000, 10000])
+    # run(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [1000, 10000])
+    run_hard(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [300, 1000])
     # run1_hard()
     # ex_sample1(lambda x : x[0] ** 2 + 2, "goldstein", it_count=1000)
     # ex_sample1(lambda x : x[0] ** 2 + 2, "armijo", it_count=1000)
