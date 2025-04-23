@@ -7,7 +7,7 @@ class LRScheduler:
     Abstract base class for learning rate schedulers.
     """
 
-    def __init__(self, initial_lr: float = 0.1, dimension: int = 2):
+    def __init__(self, initial_lr: float = 0.5, dimension: int = 2):
         self.initial_lr = initial_lr
         self.dimension = dimension
         self.iterations = 0
@@ -30,26 +30,29 @@ class Constant(LRScheduler):
 
     def get_lr(self, iter_number: int = None, **kwargs) -> float:
         self._update_counters(iter_number)
+        # print(self.initial_lr)
         return self.initial_lr
 
 
 class TimeBasedDecay(LRScheduler):
     """h(k) = h0 / (1 + λ*k)"""
 
-    def __init__(self, initial_lr: float = 0.1, decay_rate: float = 0.1):
+    def __init__(self, initial_lr: float = 1, decay_rate: float = 0.01):
         super().__init__(initial_lr)
         self.decay_rate = decay_rate
 
     def get_lr(self, iter_number: int = None, **kwargs) -> float:
         self._update_counters(iter_number)
         k = self.iterations
-        return self.initial_lr / (1 + self.decay_rate * k)
+        self.initial_lr = self.initial_lr / (1 + self.decay_rate * k)
+        print(self.initial_lr)
+        return self.initial_lr
 
 
 class StepDecay(LRScheduler):
     """h(k) = h0 * β^floor(k/step)"""
 
-    def __init__(self, initial_lr: float = 0.1, step_size: int = 10, decay_factor: float = 0.5):
+    def __init__(self, initial_lr: float = 0.1, step_size: int = 100, decay_factor: float = 0.5):
         super().__init__(initial_lr)
         self.step_size = step_size
         self.decay_factor = decay_factor
@@ -63,7 +66,7 @@ class StepDecay(LRScheduler):
 class ExponentialDecay(LRScheduler):
     """h(k) = h0 * exp(-λ*k)"""
 
-    def __init__(self, initial_lr: float = 0.1, decay_rate: float = 0.1):
+    def __init__(self, initial_lr: float = 1, decay_rate: float = 0.05):
         super().__init__(initial_lr)
         self.decay_rate = decay_rate
 
@@ -76,7 +79,7 @@ class ExponentialDecay(LRScheduler):
 class PolynomialDecay(LRScheduler):
     """h(k) = h0 * (β*k + 1)^(-α)"""
 
-    def __init__(self, initial_lr: float = 0.1, alpha: float = 0.5, beta: float = 1.0):
+    def __init__(self, initial_lr: float = 0.5, alpha: float = 0.5, beta: float = 1.0):
         super().__init__(initial_lr)
         self.alpha = alpha
         self.beta = beta

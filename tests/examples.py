@@ -24,6 +24,43 @@ YOUR_DIR_NAME = os.path.abspath('../ex_graphics/')
 
 
 class Example:
+    def __painting_counter_lines(self, x, y, z, file_name, function):
+        x_min, x_max = min(x), max(x)
+        y_min, y_max = min(y), max(y)
+        x_padding = (x_max - x_min) * 0.2
+        y_padding = (y_max - y_min) * 0.2
+
+        X = np.linspace(x_min - x_padding, x_max + x_padding, 100)
+        Y = np.linspace(y_min - y_padding, y_max + y_padding, 100)
+        X, Y = np.meshgrid(X, Y)
+
+        Z = np.zeros_like(X)
+        for i in range(X.shape[0]):
+            for j in range(X.shape[1]):
+                Z[i, j] = function([X[i, j], Y[i, j]])
+
+        plt.figure(figsize=(10, 6))
+
+        contour = plt.contour(X, Y, Z, levels=20, cmap='viridis')
+        plt.clabel(contour, inline=True, fontsize=8)
+
+        plt.plot(x, y, 'r.-', linewidth=1.5, markersize=8,
+                 label='Траектория спуска')
+
+        plt.scatter(x[0], y[0], c='blue', s=100,
+                    edgecolors='black', label='Старт')
+        plt.scatter(x[-1], y[-1], c='green', s=100,
+                    edgecolors='black', label='Финиш')
+
+        plt.title('Контурный график с траекторией градиентного спуска')
+        plt.xlabel('Ось X')
+        plt.ylabel('Ось Y')
+        plt.colorbar(contour, label='Значение функции')
+        plt.legend()
+        plt.grid(True)
+
+        plt.savefig(file_name, dpi=150, bbox_inches='tight')
+        plt.close()
 
     def __painting_3d_with_plotly(self, x, y, z, file_name, function):
         x_min, x_max, y_min, y_max = min(x), max(x), min(y), max(y)
@@ -63,7 +100,7 @@ class Example:
                     gradient=None,
                     test_criterion: sc.StoppingCriterion =sc.Convergence(),
                     learning_rate_scheduling: LRScheduler = Constant(),
-                    file_name='/home/crusader/ml_yandex/Gradient-descent/graphics/first_ex.png',
+                    file_name='../ex_graphics/counter.png',
                     beginning_point=None) -> list:
         descent = gd.gradient_descent(dimension, function, gradient, test_criterion, learning_rate_scheduling)
         descent.make_min_value(beginning_point)
@@ -72,7 +109,7 @@ class Example:
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
         anw = [x[-1], y[-1], z[-1]]
-        self.__painting_3d_with_plotly(x, y, z, file_name, function)
+        self.__painting_counter_lines(x, y, z, file_name, function)
         print(f"iterations, function_calls, gradient_calls: {descent.get_logs()}")
         return anw
 
@@ -100,7 +137,7 @@ def create_dir():
         if YOUR_DIR_NAME not in sys.path:
             os.makedirs(YOUR_DIR_NAME)
 
-def ex_sample(func, test_criterion = sc.Convergence(), gradient = None, beginning_point = np.array([10., 10.])):
+def ex_sample(func, test_criterion: sc.StoppingCriterion = sc.Convergence(), gradient = None, beginning_point = np.array([10., 10.])):
     for i in (lrs.Constant(), lrs.TimeBasedDecay(), lrs.ExponentialDecay()):
         anw = ex.run_example(dimension=2,
                              function=func,
@@ -135,7 +172,7 @@ def fourth_ex():
     strange_function
     """
     func = lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10)
-    ex_sample(func, sc.Combine(sc.MaxIterations(10000), sc.Convergence()))
+    ex_sample(func, sc.Combine(stop1 = sc.MaxIterations(10000), stop2 = sc.Convergence()))
 
 def eight_ex():
     """
@@ -162,9 +199,11 @@ def ex_sample1(func, str_decay, it_count = 300, gradient=None, beginning_point=n
                          function=func,
                          gradient=gradient,
                          learning_rate_scheduling=mp2[str_decay],
-                         test_criterion=sc.MaxIterations(it_count),
+                         test_criterion=sc.ComparativeConvergence(),
                          beginning_point=beginning_point)[2]
     print(str_decay, anw)
+
+
 
 def run(func, counts):
     for x in counts:
@@ -177,6 +216,7 @@ def run_hard(func, counts):
         ex_sample1(func, "scipy", it_count=x)
         ex_sample1(func, "armijo", it_count=x)
         ex_sample1(func, "goldstein", it_count=x)
+        ex_sample1(func, "goldensection", it_count=x)
 def nine_ex():
     """
     one more
@@ -184,11 +224,27 @@ def nine_ex():
     func = lambda x: 0.1 * x[0]**2 + 2 * x[1]**2
     ex_sample(func, sc.Convergence())
 
+def run_one(func, sched):
+    test_criterion = sc.Convergence()
+    gradient = None
+    beginning_point = np.array([10., 10.])
+    anw = ex.run_example(dimension=2,
+                         function=func,
+                         gradient=gradient,
+                         learning_rate_scheduling=sched,
+                         test_criterion=test_criterion,
+                         beginning_point=beginning_point)[0]
+    print(anw)
+    print(f'anw = {anw}')
 
 if __name__ == "__main__":
     ex = Example()
-    # run(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [1000, 10000])
-    run_hard(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [300, 1000])
+    run_one(lambda x: 10 * x[0]**2 + 0.01 * x[1]**2, ls.ArmijoRule(function=lambda x: 10 * x[0]**2 + x[1]**2))
+    # run(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [1000])
+    # run(lambda x: (x[0] ** 2) + (x[1] ** 2), [1000])
+    # run_exp(lambda x: x[0]**2 + x[1]**2, lrs.ExponentialDecay())
+    # run_hard(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [300])
+    # run_hard(lambda x: (x[0] ** 2) + (x[1] ** 2), [300])
     # run1_hard()
     # ex_sample1(lambda x : x[0] ** 2 + 2, "goldstein", it_count=1000)
     # ex_sample1(lambda x : x[0] ** 2 + 2, "armijo", it_count=1000)
