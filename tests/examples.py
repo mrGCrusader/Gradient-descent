@@ -109,7 +109,8 @@ class Example:
         y = [point[1] for point in lst]
         z = [function(point) for point in lst]
         anw = [x[-1], y[-1], z[-1]]
-        self.__painting_counter_lines(x, y, z, file_name, function)
+        self.__painting_3d_with_plotly(x, y, z, file_name, function)
+        # self.__painting_counter_lines(x, y, z, file_name, function)
         print(f"iterations, function_calls, gradient_calls: {descent.get_logs()}")
         return anw
 
@@ -138,13 +139,13 @@ def create_dir():
             os.makedirs(YOUR_DIR_NAME)
 
 def ex_sample(func, test_criterion: sc.StoppingCriterion = sc.Convergence(), gradient = None, beginning_point = np.array([10., 10.])):
-    for i in (lrs.Constant(), lrs.TimeBasedDecay(), lrs.ExponentialDecay()):
+    for i in (lrs.Constant(), lrs.TimeBasedDecay(), lrs.ExponentialDecay(), ls.ArmijoRule(function=func)):
         anw = ex.run_example(dimension=2,
                              function=func,
                              gradient=gradient,
                              learning_rate_scheduling=i,
                              test_criterion=test_criterion,
-                             beginning_point=beginning_point)[0]
+                             beginning_point=beginning_point)[2]
         print(anw)
         print(f'anw = {anw}')
 
@@ -181,7 +182,12 @@ def eight_ex():
     func = lambda x: x[0]**2 + x[1]**2 + random.random()
     ex_sample(func, sc.MaxIterations(200))
 
-
+def tenth_ex():
+    """
+    one more multimodal function
+    """
+    func = lambda x: (x[0]**2 - 4)**2 + (x[1]**2 - 9)**2 + 0.1 * x[1] * x[0]
+    ex_sample(func, sc.Convergence())
 
 def ex_sample1(func, str_decay, it_count = 300, gradient=None, beginning_point=np.array([10., 10.])):
     mp2 = {
@@ -203,8 +209,6 @@ def ex_sample1(func, str_decay, it_count = 300, gradient=None, beginning_point=n
                          beginning_point=beginning_point)[2]
     print(str_decay, anw)
 
-
-
 def run(func, counts):
     for x in counts:
         ex_sample1(func, "time", it_count=x)
@@ -217,6 +221,7 @@ def run_hard(func, counts):
         ex_sample1(func, "armijo", it_count=x)
         ex_sample1(func, "goldstein", it_count=x)
         ex_sample1(func, "goldensection", it_count=x)
+
 def nine_ex():
     """
     one more
@@ -239,7 +244,8 @@ def run_one(func, sched):
 
 if __name__ == "__main__":
     ex = Example()
-    run_one(lambda x: 10 * x[0]**2 + 0.01 * x[1]**2, ls.ArmijoRule(function=lambda x: 10 * x[0]**2 + x[1]**2))
+    # tenth_ex()
+    # run_one(lambda x: 10 * x[0]**2 + 0.01 * x[1]**2, ls.ArmijoRule(function=lambda x: 10 * x[0]**2 + x[1]**2))
     # run(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [1000])
     # run(lambda x: (x[0] ** 2) + (x[1] ** 2), [1000])
     # run_exp(lambda x: x[0]**2 + x[1]**2, lrs.ExponentialDecay())
@@ -255,6 +261,6 @@ if __name__ == "__main__":
     # ex_sample1(lambda x : x[0]**2 + 1, "scipy", it_count=100000)
     # run2_hard()
     # ex_sample1("armijo", "iter10000")
-    # eight_ex()
+    # tenth_ex()
 
 
