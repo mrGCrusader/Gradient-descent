@@ -238,12 +238,15 @@ def run_one(func, sched):
                          gradient=gradient,
                          learning_rate_scheduling=sched,
                          test_criterion=test_criterion,
-                         beginning_point=beginning_point)[0]
-    print(anw)
+                         beginning_point=beginning_point)[2]
     print(f'anw = {anw}')
 
 if __name__ == "__main__":
     ex = Example()
+    run_one(lambda x: 0.1 * x[0]**2 + 2 * x[1]**2, ls.GoldenSectionSearch(function=lambda x: 10 * x[0]**2 + x[1]**2))
+    # run_one(lambda x: 0.1 * x[0]**2 + 2 * x[1]**2, lrs.PolynomialDecay())
+    # run_one(lambda x: 0.1 * x[0]**2 + 2 * x[1]**2, lrs.ExponentialDecay(0.2, 0.05))
+    # run_one(lambda x: x[0]**2 + x[1]**2, ls.ArmijoRule(function=lambda x: 10 * x[0]**2 + x[1]**2))
     # tenth_ex()
     # run_one(lambda x: 10 * x[0]**2 + 0.01 * x[1]**2, ls.ArmijoRule(function=lambda x: 10 * x[0]**2 + x[1]**2))
     # run(lambda x: 100 * math.sqrt(abs(x[1] - 0.01 * x[0]**2)) + 0.01 * abs(x[0] + 10), [1000])

@@ -1,0 +1,210 @@
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{изображение.png}
+    \caption{Пример графика}
+    \label{fig:enter-label}
+\end{figure}
+
+Для ограничения на 1000 итераций
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Scheduler} & \textbf{Iterations} & \textbf{Result} \\
+time     & 1000     & 2.3301843759451404e-06 \\
+exp      & 1000     & 5.454729496286637 \\
+const      & 1000  & 2.2129833650046397e-43 \\
+poly      & 1000     & 5.613678100199577e-09 \\
+\end{tabular}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Line Search} & \textbf{Iterations} & \textbf{Result} \\
+armijo     & 1000     & 2.9491661027315674e-17 \\
+goldstein      & 1000     & 2.2129833650046397e-43 \\
+scipy      & 1000     & 0.0 \\
+\end{tabular}
+\end{table}
+
+Для ограничения на 10000 итераций
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Scheduler} & \textbf{Iterations} & \textbf{Result} \\
+time     & 10000     & 2.410825811186189e-10 \\
+exp      & 10000     & 5.454729496286637 \\
+const      & 10000  & 2.2129833650046397e-43 \\
+poly      & 10000     & 9.080944289837091e-33 \\
+\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Line Search} & \textbf{Iterations} & \textbf{Result} \\
+armijo     & 10000     & 2.4800014651180123e-42 \\
+goldstein      & 10000     & 1.2449221016082278e-44 \\
+scipy      & 10000     & 0.0 \\
+\end{tabular}
+\end{table}
+вот такие таблички получились
+
+Как можно видеть из таблицы на простой функции константный шаг работает хорошо, градиент плавно затухает и все хорошо получается. TimeBasedDecay затухает, но медленно сходится всё-таки, поэтому требуется много итераций. ExponentialDecay слишком быстро затухает и плохо находит min.
+
+$$ \text{Рис. 2}) f(x, y) = x^2 + y - 1 $$
+Эта функция не имеет точки min. Поэтому Convergence и GradientNorm работают на ней бесконечно долго, и необходимо ограничить количество итераций. Поэтому найденное мин. значение зависело от количества итераций.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{изображение4.png}
+    \caption{Пример графика}
+    \label{fig:enter-label}
+\end{figure}
+\\
+
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+Интересно было бы рассмотреть шумную функцию, имеющую следующую формулу:
+$$ \text{Рис. 3}) f(x, y) = x^2 + y^2 + random$$
+Интересно, что функция работает корректно именно при TimeBasedDecay lrs, при этом Constant lrs и ExponentialDecay lrs показыавют себя плохо, это объясняется тем, что Constant сходится слишком медленно(если быть точным, то вообще не сходится), а ExponentialDecay сходится слишком быстро.
+Также критерий останова Convergence также работает некорректно, так же не обязан работать корректно, так как разность значений каждый раз зависит от случайнойсти, что может привести либо к примерно бесконечному времени работы, либо к досрочному завершению
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{изображение2.png}
+    \caption{Шумная функция}
+    \label{fig:enter-label}
+\end{figure}
+Теперь давайте посмотрим на другую интересную(не является гладкой) функцию:
+$$\text{Рис. 4) } f(x, y) = 100 * \sqrt{|y - 0.01 * x^2|} + 0.01 * |x + 10|$$
+Лучше всего работает с lrs Constant, потому что функция имеет несколько локальных минимумов, и засчёт большего шага больше возможности обойти много таких точек, в то время как TimeBasedDecay и ExponentialDecay быстро уменьшают шаг. Также стоит заметить, что если критерий останова - Convergence, то есть вероятность бесконечного количества итераций. На методе Голдштейн происходит бесконечное количество итераций, Армихо и скипи находят примерно 0.217 - это является отличным результатом на 1000 и на 300.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{изображение3.png}
+    \caption{Плохая функция}
+    \label{fig:enter-label}
+\end{figure}
+
+\\
+Давайте теперь рассмотрим вторую квадратучную функцию:
+$$\text{Рис 5.}f(x, y) = 0.1 * x^2 + 2 * y^2$$
+Вторая квадратичная функция: она интересна нам тем, что она дифференцируема и квазивыпукла, именно на подобные функции рассчитан алгоритм градиентного спуска.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{изображение5.png}
+    \caption{Enter Caption}
+    \label{fig:enter-label}
+\end{figure}
+
+
+Для ограничения на 10000 итераций
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Scheduler} & \textbf{Iterations} & \textbf{Result} \\
+time     & 1000     & 1.6634815802099248 \\
+exp      & 1000     & 7.179109406479582\\
+const      & 1000  & 2.9491661027315674e-17 \\
+poly      & 1000     & 0.9004719520140982 \\
+\end{tabular}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Line Search} & \textbf{Iterations} & \textbf{Result} \\
+armijo     & 1000     & 2.9491661027315674e-17 \\
+goldstein      & 1000     & 1.2449221016082278e-44 \\
+scipy      & 1000     & 0.0 \\
+
+\end{tabular}
+\end{table}
+
+
+Для ограничения на 10000 итераций
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Scheduler} & \textbf{Iterations} & \textbf{Result} \\
+time     & 10000     & 0.6647139074095034 \\
+exp      & 10000     & 7.179109406479582 \\
+const      & 10000  & 2.4800014651180123e-42 \\
+poly      & 10000     &  0.00379284775608175 \\
+\end{tabular}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Line Search} & \textbf{Iterations} & \textbf{Result} \\
+armijo     & 10000     & 2.4800014651180123e-42 \\
+goldstein      & 10000     & 1.2449221016082278e-44 \\
+scipy      & 10000     & 0.0 \\
+
+\end{tabular}
+\end{table}
+
+вот такие таблички получились
+
+
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll}
+\textbf{Line Search} & \textbf{Iterations} & \textbf{Result} \\
+armijo     & 1000     & ~0.217 \\
+goldstein      & 1000     &  - \\
+scipy      & 1000     &  ~0.217 \\
+
+\end{tabular}
+\end{table}
+
+\\
+\\

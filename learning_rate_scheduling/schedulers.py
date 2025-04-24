@@ -45,7 +45,7 @@ class TimeBasedDecay(LRScheduler):
         self._update_counters(iter_number)
         k = self.iterations
         self.initial_lr = self.initial_lr / (1 + self.decay_rate * k)
-        print(self.initial_lr)
+        # print(self.initial_lr)
         return self.initial_lr
 
 
